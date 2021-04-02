@@ -186,9 +186,9 @@ class RVEA(BaseDecompositionEA):
         """
         return self._function_evaluation_count / self.total_function_evaluations
     
-    """
+
     
-    def _next_gen(self):
+    def _refresh_population(self):
         #Run one generation of decomposition based EA. Intended to be used by
         #next_iteration.
         
@@ -202,7 +202,7 @@ class RVEA(BaseDecompositionEA):
         self._current_gen_count += 1
         self._gen_count_in_curr_iteration += 1
         self._function_evaluation_count += offspring.shape[0]
-    """
+    
 
 class oRVEA(RVEA):
     def __init__(
