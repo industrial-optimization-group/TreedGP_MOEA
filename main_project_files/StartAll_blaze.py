@@ -18,7 +18,7 @@ convert_to_mat = False
 #import Telegram_bot.telegram_bot_messenger as tgm
 #dims = [5,8,10] #,8]
 #dims = [2, 5, 7, 10]
-dims = [2]
+dims = [10]
 #dims = [27]
 
 sample_sizes = [2000]
@@ -28,8 +28,8 @@ sample_sizes = [2000]
 #folder_data = 'AM_Samples_109_Final'
 #folder_data = 'AM_Samples_1000'
 
-#problem_testbench = 'DTLZ'
-problem_testbench = 'DDMOPP'
+problem_testbench = 'DTLZ'
+#problem_testbench = 'DDMOPP'
 #problem_testbench = 'GAA'
 """
 objs(1) = max_NOISE;
@@ -67,10 +67,10 @@ objectives = [2]
 #objectives = [3,5,6,8,10]
 #objectives = [3,5,6,8,10]
 
-#problems = ['DTLZ2']
+problems = ['DTLZ5']
 #problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
 
-problems = ['P1']
+#problems = ['P2']
 #problems = ['P1','P2','P3','P4']
 #problems = ['P1','P3','P4']
 

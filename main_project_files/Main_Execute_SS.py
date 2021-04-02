@@ -38,6 +38,7 @@ from desdeo_problem.testproblems.TestProblems import test_problem_builder
 max_samples = 219
 max_iters = 5
 init_folder = '/home/amrzr/Work/Codes/data/initial_samples/'
+plot_folder = '/home/amrzr/Work/Codes/data/plots/'
 
 def build_surrogates(problem_testbench, problem_name, nobjs, nvars, nsamples, sampling, is_data, x_data, y_data, surrogate_type, Z=None, z_samples=None):
     x_names = [f'x{i}' for i in range(1,nvars+1)]
@@ -393,8 +394,8 @@ def run_optimizer_rf(problem_testbench, problem_name, nobjs, nvars, sampling, ns
 
 def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, nsamples, is_data, surrogate_type, run):
     time_taken_all = 0
-    #n_iterations_building = nsamples/(10*nvars)
-    n_iterations_building = 10
+    n_iterations_building = nsamples/(10*nvars)
+    #n_iterations_building = 10
     if is_data is True:
         x, y = read_dataset(problem_testbench, problem_name, nobjs, nvars, sampling, nsamples, run)
 
@@ -423,8 +424,8 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
             total_points_per_model_sequence = total_points_per_model
         else:
             total_points_per_model_sequence = np.vstack((total_points_per_model_sequence, total_points_per_model))
-        #if evolver_opt_tree._iteration_counter > 5:
-        #    delta_total_point = total_points_all - total_points_all_sequence[evolver_opt_tree._iteration_counter-3]
+        if evolver_opt_tree._iteration_counter > 5:
+            delta_total_point = total_points_all - total_points_all_sequence[evolver_opt_tree._iteration_counter-3]
         print("Sequence:",total_points_all_sequence)
         print("Delta:",delta_total_point)
         print("Iteration:",evolver_opt_tree._iteration_counter)
@@ -432,18 +433,19 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
 
         count=count+1
         print("Size solutions:",np.shape(population_opt_tree.objectives))
-        y1,s1=surrogate_problem.objectives[0]._model.predict(X_solutions)
-        y2,s2=surrogate_problem.objectives[1]._model.predict(X_solutions)
+        y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
+        y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.scatter(y1, y2)
-        plt.savefig("scatter_solns_xx"+str(count)+"_"+str(run)+".pdf")
+        plt.savefig(plot_folder+"scatter_solns_xx"+str(count)+"_"+str(run)+".pdf")
         ax.cla()
         fig.clf()
         plt.close()
+        evolver_opt_tree._refresh_population()
     #for i in range(nobjs):
 
-    
+    """
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.scatter(population_opt_tree.objectives[:,0], population_opt_tree.objectives[:,1])
@@ -451,12 +453,12 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
     ax.cla()
     fig.clf()
     plt.close()
-
+    """
 
 
     end = time.time()
-    print("Solns:",population_opt_tree.objectives)
-    print(evolver_opt_tree.population.fitness)
+    #print("Solns:",population_opt_tree.objectives)
+    #print(evolver_opt_tree.population.fitness)
     time_taken = end - start
     print("Surrogates build complete in :",time_taken)
     print("Total points per model final:", total_points_per_model)

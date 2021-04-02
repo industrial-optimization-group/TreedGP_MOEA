@@ -189,6 +189,7 @@ class RVEA(BaseDecompositionEA):
 
     
     def _refresh_population(self):
+    #def _next_gen(self):
         #Run one generation of decomposition based EA. Intended to be used by
         #next_iteration.
         

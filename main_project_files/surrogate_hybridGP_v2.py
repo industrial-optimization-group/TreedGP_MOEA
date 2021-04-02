@@ -82,8 +82,8 @@ class HybridTreeGP_v2(BaseRegressor):
                 Y_leaf = y[loc_leaf]
                 print("Number of data points:",np.shape(X_leaf)[0])
                 total_point += np.shape(X_leaf)[0]
-                #kernel = GPy.kern.Matern52(10,ARD=True) #+ GPy.kern.White(2)
-                m = GPy.models.GPRegression(X_leaf,Y_leaf.reshape(-1, 1))#,kernel=kernel)
+                kernel = GPy.kern.Matern52(np.shape(X_leaf)[1],ARD=True) #+ GPy.kern.White(2)
+                m = GPy.models.GPRegression(X_leaf,Y_leaf.reshape(-1, 1),kernel=kernel)
                 m.optimize('bfgs')
                 self.dict_gps[str(i)] = m
             print("Total points:",total_point)
@@ -101,9 +101,9 @@ class HybridTreeGP_v2(BaseRegressor):
         #print("Reduction=",(sizeinit - np.shape(Y_solution_leaf)[0]))
         
         unique_solutions, count_solutions = np.unique(Y_solution_leaf, return_counts=True)
-        print("Count 1:",count_solutions)
-        print("Unique sols:",unique_solutions)
-        print("err leaves:",self.error_leaves)
+        #print("Count 1:",count_solutions)
+        #print("Unique sols:",unique_solutions)
+        #print("err leaves:",self.error_leaves)
         unique_solutions = np.setdiff1d(unique_solutions,self.error_leaves)
         #print("Reduction=",(sizeinit -np.shape(unique_solutions)[0]))
         self.total_point_gps = unique_solutions.size
@@ -132,8 +132,8 @@ class HybridTreeGP_v2(BaseRegressor):
             #print("Number of data points : ",np.shape(X_leaf)[0])
             self.total_point += np.shape(X_leaf)[0]
             #print("Total points : ",self.total_point)
-            #kernel = GPy.kern.Matern52(10,ARD=True) #+ GPy.kern.White(2)
-            m = GPy.models.GPRegression(X_leaf,Y_leaf.reshape(-1, 1))#,kernel=kernel)
+            kernel = GPy.kern.Matern52(np.shape(X_leaf)[1],ARD=True) #+ GPy.kern.White(2)
+            m = GPy.models.GPRegression(X_leaf,Y_leaf.reshape(-1, 1),kernel=kernel)
             m.optimize('bfgs')
             self.dict_gps[str(unique_solutions[arg_max_mse])] = m
 
@@ -184,11 +184,11 @@ class HybridTreeGP_v2(BaseRegressor):
         Y_predict = self.regr.predict(X=X)
         Y_test_leaf = self.regr.apply(X)
         unique_solutions, count_solutions = np.unique(Y_test_leaf, return_counts=True)
-        print("Count 1:",count_solutions)
-        print("Unique sols:",unique_solutions)
-        print("Y leaf:",Y_test_leaf)
+        #print("Count 1:",count_solutions)
+        #print("Unique sols:",unique_solutions)
+        #print("Y leaf:",Y_test_leaf)
         Y_predict_mod = Y_predict
-        print("Error leaves:",self.error_leaves)
+        #print("Error leaves:",self.error_leaves)
         #print("Leaf node predicted:",Y_test_leaf)
         #print("Leaf node predicted by GP:")
         count=0
@@ -201,8 +201,8 @@ class HybridTreeGP_v2(BaseRegressor):
                     count += 1
                     #print(Y_predict_mod[i])
             #loc_gps = np.in1d(Y_test_leaf,self.error_leaves)
-        print("GP predicted:",count)    
+        #print("GP predicted:",count)    
         y_mean = Y_predict_mod
-        print(y_mean)
+        #print(y_mean)
         y_stdev = None
         return (y_mean, y_stdev)
