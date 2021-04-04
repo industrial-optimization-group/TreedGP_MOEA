@@ -432,6 +432,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         print("points per model:",total_points_per_model)
 
         count=count+1
+        """
         print("Size solutions:",np.shape(population_opt_tree.objectives))
         y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
         y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
@@ -442,6 +443,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         ax.cla()
         fig.clf()
         plt.close()
+        """
         evolver_opt_tree._refresh_population()
     #for i in range(nobjs):
 
@@ -478,7 +480,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
                 nsamples,
                 run)
                 """
-    """
+    
     population = optimize_surrogates(surrogate_problem)
 
     ##### Previous HTGP
@@ -498,5 +500,5 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
             'total_points_per_model_sequence': total_points_per_model_sequence
         }
     return results_dict
-    """
-    return 0
+    
+    #return 0
