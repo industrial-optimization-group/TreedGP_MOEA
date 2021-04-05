@@ -31,9 +31,10 @@ from sklearn.neighbors import NearestNeighbors
 import time
 import GPy
 from desdeo_problem.testproblems.TestProblems import test_problem_builder
+import desdeo_emo.othertools.plotlyanimate as plt_anim
 
-#from plot_surface import plt_surface2d as plt_surface
-#from plot_surface import plt_surface_all as plt_surface_all
+from plot_surface import plt_surface3d as plt_surface
+from plot_surface import plt_surface_all as plt_surface_all
 
 max_samples = 219
 max_iters = 5
@@ -126,8 +127,8 @@ def run_optimizer(problem_testbench, problem_name, nobjs, nvars, sampling, nsamp
         print("Building models!")
         surrogate_problem, time_taken = build_surrogates(problem_testbench,problem_name, nobjs, nvars, nsamples, sampling, is_data, x, y, surrogate_type,z_samples={'z_samples':10*nvars})
         print("Time takes:",time_taken)
-        filename = surrogate_type + '_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
-        """
+        filename = plot_folder + surrogate_type + '_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
+
         plt_surface_all(surrogate_problem,
                     filename,
                     init_folder,
@@ -136,9 +137,8 @@ def run_optimizer(problem_testbench, problem_name, nobjs, nvars, sampling, nsamp
                     nobjs, 
                     nvars, 
                     sampling, 
-                    nsamples,
-                    run)
-        """
+                    nsamples)
+
         population = optimize_surrogates(surrogate_problem)
         results_dict = {
                 'individual_archive': population.individuals_archive,
@@ -395,6 +395,7 @@ def run_optimizer_rf(problem_testbench, problem_name, nobjs, nvars, sampling, ns
 def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, nsamples, is_data, surrogate_type, run):
     time_taken_all = 0
     n_iterations_building = nsamples/(10*nvars)
+    filename_scatterplot = plot_folder + 'Scatter_solutions_' + problem_testbench + '_' + problem_name +'_'+str(nobjs) + '_' + str(nvars) + '_'+ sampling +'_'+ str(nsamples) + '_' + str(run)
     #n_iterations_building = 10
     if is_data is True:
         x, y = read_dataset(problem_testbench, problem_name, nobjs, nvars, sampling, nsamples, run)
@@ -430,9 +431,16 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         print("Delta:",delta_total_point)
         print("Iteration:",evolver_opt_tree._iteration_counter)
         print("points per model:",total_points_per_model)
-
-        count=count+1
         """
+        # Plotting the solutions
+        if count == 0:
+            figobj = plt_anim.animate_init_(evolver_opt_tree.population.objectives, filename_scatterplot)
+        else:
+            figobj = plt_anim.animate_next_(evolver_opt_tree.population.objectives, figobj, filename_scatterplot, count)
+        count=count+1
+
+
+        
         print("Size solutions:",np.shape(population_opt_tree.objectives))
         y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
         y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
@@ -445,6 +453,8 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         plt.close()
         """
         evolver_opt_tree._refresh_population()
+    
+    #figobj = plt_anim.animate_next_(evolver_opt_tree.population.objectives, figobj, filename_scatterplot, count+1)
     #for i in range(nobjs):
 
     """
@@ -466,9 +476,10 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
     print("Total points per model final:", total_points_per_model)
     print("Total points per model sequence:", total_points_per_model_sequence)
     
-    #plt_surface(surrogate_problem,'htgp_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling)
-    filename = 'htgp_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
-    """
+    
+    
+    filename = plot_folder + 'htgp_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
+    plt_surface(surrogate_problem, filename)
     plt_surface_all(surrogate_problem,
                 filename,
                 init_folder,
@@ -477,9 +488,8 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
                 nobjs, 
                 nvars, 
                 sampling, 
-                nsamples,
-                run)
-                """
+                nsamples)
+
     
     population = optimize_surrogates(surrogate_problem)
 

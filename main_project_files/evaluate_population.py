@@ -14,9 +14,7 @@ def evaluate_population(population,
                         nobjs, 
                         nvars, 
                         sampling, 
-                        nsamples, 
-                        approaches,
-                        run):
+                        nsamples):
     s = eng.genpath(init_folder)
     eng.addpath(s, nargout=0)
     size_pop = np.shape(population)[0]
@@ -56,9 +54,7 @@ def evaluate_run(init_folder,
                                                                 nobjs, 
                                                                 nvars, 
                                                                 sampling, 
-                                                                nsamples, 
-                                                                approaches,
-                                                                run)
+                                                                nsamples)
     #print(data_evaluted)
     outfile = open(path_to_file + '_evaluated', 'wb')
     pickle.dump(data_evaluted, outfile)
