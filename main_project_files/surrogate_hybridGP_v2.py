@@ -37,7 +37,7 @@ class HybridTreeGP_v2(BaseRegressor):
         print("Min leaf samples=",self.min_samples_leaf)
         self.regr = tree.DecisionTreeRegressor(max_depth=100, min_samples_leaf=self.min_samples_leaf)
         self.regr = self.regr.fit(X, y)
-        #dot_data = tree.export_graphviz(self.regr, out_file='tree'+str(datetime.datetime.now())+'.dot') 
+        dot_data = tree.export_graphviz(self.regr, out_file='tree'+str(datetime.datetime.now())+'.dot') 
         n_nodes = self.regr.tree_.node_count
         children_left = self.regr.tree_.children_left
         children_right = self.regr.tree_.children_right
@@ -128,8 +128,8 @@ class HybridTreeGP_v2(BaseRegressor):
             loc_leaf = np.where(self.samples_leaf_nodes==unique_solutions[arg_max_mse])[0]
             X_leaf = self.X[loc_leaf]
             Y_leaf = self.y[loc_leaf]
-            #print("Leaf node index : ", self.error_leaves)
-            #print("Number of data points : ",np.shape(X_leaf)[0])
+            print("Leaf node index : ", self.error_leaves)
+            print("Number of data points : ",np.shape(X_leaf)[0])
             self.total_point += np.shape(X_leaf)[0]
             #print("Total points : ",self.total_point)
             kernel = GPy.kern.Matern52(np.shape(X_leaf)[1],ARD=True) #+ GPy.kern.White(2)

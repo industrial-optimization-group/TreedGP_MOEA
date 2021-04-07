@@ -40,6 +40,7 @@ max_samples = 219
 max_iters = 5
 init_folder = '/home/amrzr/Work/Codes/data/initial_samples/'
 plot_folder = '/home/amrzr/Work/Codes/data/plots/'
+plotting = False
 
 def build_surrogates(problem_testbench, problem_name, nobjs, nvars, nsamples, sampling, is_data, x_data, y_data, surrogate_type, Z=None, z_samples=None):
     x_names = [f'x{i}' for i in range(1,nvars+1)]
@@ -127,17 +128,18 @@ def run_optimizer(problem_testbench, problem_name, nobjs, nvars, sampling, nsamp
         print("Building models!")
         surrogate_problem, time_taken = build_surrogates(problem_testbench,problem_name, nobjs, nvars, nsamples, sampling, is_data, x, y, surrogate_type,z_samples={'z_samples':10*nvars})
         print("Time takes:",time_taken)
-        filename = plot_folder + surrogate_type + '_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
+        if plotting is True:
+            filename = plot_folder + surrogate_type + '_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
 
-        plt_surface_all(surrogate_problem,
-                    filename,
-                    init_folder,
-                    problem_testbench, 
-                    problem_name, 
-                    nobjs, 
-                    nvars, 
-                    sampling, 
-                    nsamples)
+            plt_surface_all(surrogate_problem,
+                        filename,
+                        init_folder,
+                        problem_testbench, 
+                        problem_name, 
+                        nobjs, 
+                        nvars, 
+                        sampling, 
+                        nsamples)
 
         population = optimize_surrogates(surrogate_problem)
         results_dict = {
@@ -417,6 +419,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         population_opt_tree = evolver_opt_tree.population
         X_solutions = population_opt_tree.individuals
         for i in range(nobjs):
+            print("Objective :", i+1)
             surrogate_problem.objectives[i]._model.addGPs(X_solutions)
             total_points_all += surrogate_problem.objectives[i]._model.total_point_gps
             total_points_per_model[i] = surrogate_problem.objectives[i]._model.total_point
@@ -431,14 +434,15 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         print("Delta:",delta_total_point)
         print("Iteration:",evolver_opt_tree._iteration_counter)
         print("points per model:",total_points_per_model)
-        """
+        
         # Plotting the solutions
-        if count == 0:
-            figobj = plt_anim.animate_init_(evolver_opt_tree.population.objectives, filename_scatterplot)
-        else:
-            figobj = plt_anim.animate_next_(evolver_opt_tree.population.objectives, figobj, filename_scatterplot, count)
-        count=count+1
-
+        if plotting is True:
+            if count == 0:
+                figobj = plt_anim.animate_init_(evolver_opt_tree.population.objectives, filename_scatterplot)
+            else:
+                figobj = plt_anim.animate_next_(evolver_opt_tree.population.objectives, figobj, filename_scatterplot, count)
+            count=count+1
+        """
 
         
         print("Size solutions:",np.shape(population_opt_tree.objectives))
@@ -477,18 +481,18 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
     print("Total points per model sequence:", total_points_per_model_sequence)
     
     
-    
-    filename = plot_folder + 'htgp_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
-    plt_surface(surrogate_problem, filename)
-    plt_surface_all(surrogate_problem,
-                filename,
-                init_folder,
-                problem_testbench, 
-                problem_name, 
-                nobjs, 
-                nvars, 
-                sampling, 
-                nsamples)
+    if plotting is True:
+        filename = plot_folder + 'htgp_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
+        plt_surface(surrogate_problem, filename)
+        plt_surface_all(surrogate_problem,
+                    filename,
+                    init_folder,
+                    problem_testbench, 
+                    problem_name, 
+                    nobjs, 
+                    nvars, 
+                    sampling, 
+                    nsamples)
 
     
     population = optimize_surrogates(surrogate_problem)

@@ -33,15 +33,15 @@ from ranking_approaches import  calc_rank
 #pareto_front_directory = 'True_Pareto_5000'
 
 mod_p_val = True
-perform_bonferonni = False
+perform_bonferonni = True
 metric = 'HV'
 #metric = 'IGD'
 save_fig = 'pdf'
 #dims = [5,8,10] #,8,10]
 dims = [2, 5, 7, 10]
 #dims = [5]
-sample_sizes = [2000, 10000]#, 50000]
-#sample_sizes = [2000]
+#sample_sizes = [2000, 10000]#, 50000]
+sample_sizes = [10000]
 
 data_folder = '/home/amrzr/Work/Codes/data'
 init_folder = data_folder + '/initial_samples'
@@ -106,9 +106,9 @@ emo_algorithm = ['RVEA']
 #approaches = ['Generic', 'Probabilistic','Hybrid']
 #approaches = ["generic_fullgp","generic_sparsegp","strategy_2","strategy_3","rf_ne10","rf", "htgp0"]
 #approaches = ["generic_fullgp0","generic_fullgp","generic_sparsegp0","generic_sparsegp", "htgp0", "htgp1" , "htgp"]
-#approaches = ["generic_fullgp","generic_sparsegp","htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp","htgp_1","htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp_50","generic_sparsegp","htgp_mse"]
+#approaches = ["generic_fullgp","generic_sparsegp","htgp"]
 approaches = ["generic_sparsegp","htgp"]
 
 mode_length = int(np.size(approaches))
@@ -129,7 +129,7 @@ hv_ref = {"DTLZ2": {"2": [3, 3], "3": [6, 6, 6], "5": [6, 6, 6, 6, 6],  "7": [6,
 
 
 nruns = 11
-pool_size = nruns
+pool_size = 4
 
 plot_boxplot = True
 
@@ -227,7 +227,7 @@ for sample_size in sample_sizes:
                                     return [hv_x, rmse_mv_sols, time_taken, solution_ratio]
 
 
-                                temp = Parallel(n_jobs=11)(delayed(parallel_execute)(run, path_to_file, prob, obj) for run in range(nruns))
+                                temp = Parallel(n_jobs=pool_size)(delayed(parallel_execute)(run, path_to_file, prob, obj) for run in range(nruns))
                                 temp=np.asarray(temp)
                                 igd_temp = np.transpose(temp[:, 0])
                                 solution_ratio_temp = np.transpose(temp[:, 3])

@@ -27,7 +27,7 @@ convert_to_mat = False
 #dims = [5,8,10] #,8]
 #dims = [2, 5, 7, 10]
 dims = [2]
-#dims = [27]
+#dims = [10]
 
 sample_sizes = [2000]
 #sample_sizes = [2000, 10000, 50000]
@@ -78,7 +78,7 @@ objectives = [2]
 problem_testbench = 'DDMOPP'
 #problem_testbench = 'GAA'
 
-#problems = ['DTLZ5']
+#problems = ['DTLZ2']
 #problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
 
 problems = ['P2']
