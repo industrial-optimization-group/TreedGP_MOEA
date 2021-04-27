@@ -1,8 +1,7 @@
-function obj_vals = evaluate_python(population, init_folder, approaches, Strategy, Problem, M, nvars, sample_size, run, is_plot, plot_init)
+function obj_vals = evaluate_python(population, init_folder, Strategy, Problem, M, nvars, sample_size, run, is_plot, plot_init)
     load(fullfile(init_folder,['DDMOPP_Params_' Strategy '_' Problem '_' num2str(M) '_' num2str(nvars) '_' num2str(sample_size) '.mat']));
     load(fullfile(init_folder,['Initial_Population_DDMOPP_' Strategy '_AM_' num2str(nvars) '_' num2str(sample_size) '.mat']));
     M=double(M);
-    run = double(run)
     obj_vals = zeros(size(population,1),M);
     if plot_init == 1
         population = Initial_Population_DDMOPP(Run+1).c;
@@ -38,7 +37,7 @@ function obj_vals = evaluate_python(population, init_folder, approaches, Strateg
         PF=obj_vals(non,:);
         scatter(non_dom_pop(:,1), non_dom_pop(:,2),'*')
         hold off;
-        saveas(gcf,fullfile('/home/amrzr/Work/Codes/data/test_runs/Test_DR_CSC_ARDMatern4/Plots_solutions',['Solutions_' approaches '_' Strategy '_' Problem '_' num2str(M) '_' num2str(nvars) '_' num2str(sample_size) '_' num2str(run) '.pdf']))
+        saveas(gcf,fullfile('/home/amrzr/Work/Codes/data/test_runs/Test_DR_CSC_ARDMatern4/Plots_solutions',['Solutions_' Strategy '_' Problem '_' num2str(M) '_' num2str(nvars) '_' num2str(sample_size) '_' '.pdf']))
         close all;
         %clear all;
         

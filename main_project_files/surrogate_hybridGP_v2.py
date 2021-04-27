@@ -37,7 +37,7 @@ class HybridTreeGP_v2(BaseRegressor):
         print("Min leaf samples=",self.min_samples_leaf)
         self.regr = tree.DecisionTreeRegressor(max_depth=100, min_samples_leaf=self.min_samples_leaf)
         self.regr = self.regr.fit(X, y)
-        dot_data = tree.export_graphviz(self.regr, out_file='tree'+str(datetime.datetime.now())+'.dot') 
+        #dot_data = tree.export_graphviz(self.regr, out_file='tree'+str(datetime.datetime.now())+'.dot') 
         n_nodes = self.regr.tree_.node_count
         children_left = self.regr.tree_.children_left
         children_right = self.regr.tree_.children_right

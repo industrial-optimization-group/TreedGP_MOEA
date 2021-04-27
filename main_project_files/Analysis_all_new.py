@@ -31,7 +31,7 @@ from ranking_approaches import  calc_rank
 
 
 #pareto_front_directory = 'True_Pareto_5000'
-
+is_plot = False
 mod_p_val = True
 perform_bonferonni = True
 metric = 'HV'
@@ -40,8 +40,9 @@ save_fig = 'pdf'
 #dims = [5,8,10] #,8,10]
 dims = [2, 5, 7, 10]
 #dims = [5]
+sample_sizes = [2000]
 #sample_sizes = [2000, 10000]#, 50000]
-sample_sizes = [10000]
+#sample_sizes = [10000, 50000]
 
 data_folder = '/home/amrzr/Work/Codes/data'
 init_folder = data_folder + '/initial_samples'
@@ -63,14 +64,14 @@ objectives = [3,5,7]
 #objectives = [3,5,6,8,10]
 
 
-problem_testbench = 'DTLZ'
-#problem_testbench = 'DDMOPP'
+#problem_testbench = 'DTLZ'
+problem_testbench = 'DDMOPP'
 
-#problems = ['DTLZ2']
+#problems = ['DTLZ7']
 #problems = ['DTLZ2','DTLZ4']
 #problems = ['P1']
-problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
-#problems = ['P1','P2','P3','P4']
+#problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
+problems = ['P1','P2','P3','P4']
 #problems = ['P4']
 #problems = ['WELDED_BEAM'] #dims=4
 #problems = ['TRUSS2D'] #dims=3
@@ -108,8 +109,8 @@ emo_algorithm = ['RVEA']
 #approaches = ["generic_fullgp0","generic_fullgp","generic_sparsegp0","generic_sparsegp", "htgp0", "htgp1" , "htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp","htgp_1","htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp_50","generic_sparsegp","htgp_mse"]
-#approaches = ["generic_fullgp","generic_sparsegp","htgp"]
-approaches = ["generic_sparsegp","htgp"]
+approaches = ["generic_fullgp","generic_sparsegp","htgp"]
+#approaches = ["generic_sparsegp","htgp"]
 
 mode_length = int(np.size(approaches))
 #approaches = ['7', '9', '11']
@@ -233,6 +234,12 @@ for sample_size in sample_sizes:
                                 solution_ratio_temp = np.transpose(temp[:, 3])
                                 rmse_mv_sols_temp = np.transpose(temp[:, 1])
                                 time_taken_temp = np.transpose(temp[:, 2])
+                                
+                                outfile_median = open(path_to_file + '/median_index', 'wb')
+                                median_index = np.argsort(igd_temp)[len(igd_temp)//2]
+                                pickle.dump(median_index, outfile_median)
+                                outfile_median.close()
+
 
                                 if plot_boxplot is True:
                                     if igd_all is None:
@@ -360,12 +367,12 @@ for sample_size in sample_sizes:
 
                             filename_fig = data_folder + '/test_runs/' + main_directory + '/Plots/' + metric + '_' + str(sample_size) + '_' + samp + '_' + algo + '_' + prob + '_' + str(
                                 obj) + '_' + str(n_vars)
-
-                            if save_fig == 'png':
-                                fig.savefig(filename_fig + '.png', bbox_inches='tight')
-                            else:
-                                fig.savefig(filename_fig + '.pdf', bbox_inches='tight')
-                            ax.clear()
+                            if is_plot is True:
+                                if save_fig == 'png':
+                                    fig.savefig(filename_fig + '.png', bbox_inches='tight')
+                                else:
+                                    fig.savefig(filename_fig + '.pdf', bbox_inches='tight')
+                                ax.clear()
                             """
                             bp = ax.boxplot(solution_ratio_all, showfliers=False)
                             ax.set_title('SOLR_'+ samp + '_Algo_' + algo + '_' + prob + '_' + str(obj))

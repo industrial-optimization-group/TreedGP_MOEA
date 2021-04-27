@@ -25,6 +25,7 @@ graphviz = "^0.16"
 paramz = "^0.9.5"
 plotly-express = "^0.4.1"
 pymoo = "^0.4.2"
+seaborn = "^0.11.1"
 
 [tool.poetry.dev-dependencies]
 

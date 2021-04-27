@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1, '/mnt/i/AmzNew/')
+sys.path.insert(1, '/home/amrzr/Work/Codes/TreedGP_MOEA/')
 import numpy as np
 import pickle
 import os
@@ -12,7 +12,7 @@ from pygmo import hypervolume as hv
 from scipy import stats
 from mpl_toolkits.mplot3d import Axes3D
 import pandas as pd
-
+import math
 from statsmodels.stats.multicomp import (pairwise_tukeyhsd,
                                          MultiComparison)
 from statsmodels.stats.multitest import multipletests
@@ -36,10 +36,12 @@ mod_p_val = True
 metric = 'HV'
 #metric = 'IGD'
 save_fig = 'pdf'
-#dims = [5] #,8,10]
+#dims = [7] #,8,10]
 dims = [2, 5, 7, 10]
 sample_sizes = [2000, 10000, 50000]
-folder_data = './data/initial_samples'
+data_folder = '/home/amrzr/Work/Codes/data'
+init_folder = data_folder + '/initial_samples'
+
 
 #problem_testbench = 'DTLZ'
 problem_testbench = 'DDMOPP'
@@ -50,18 +52,19 @@ problem_testbench = 'DDMOPP'
 #main_directory = 'Tests_toys'
 #main_directory = 'Test_Gpy3'
 #main_directory = 'Test_DR_4'
-main_directory = 'Test_DR_CSC_Final_1'
+main_directory = 'Test_DR_CSC_ARDMatern4'
 
 objectives = [3,5,7]
-#objectives = [3]
+#objectives = [7]
 #objectives = [2,3,5]
 #objectives = [3,5,6,8,10]
 
 #problems = ['DTLZ2']
 #problems = ['DTLZ2','DTLZ4']
-#problems = ['P1']
+#problems = ['P4']
 #problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
 problems = ['P1','P2','P3','P4']
+#problems = ['P1','P2','P3']
 #problems = ['P1']
 #problems = ['WELDED_BEAM'] #dims=4
 #problems = ['TRUSS2D'] #dims=3
@@ -86,7 +89,7 @@ approaches = ["htgp"]
 mode_length = int(np.size(approaches))
 
 nruns = 11
-pool_size = 11
+pool_size = 1
 
 plot_boxplot = True
 
@@ -99,13 +102,14 @@ p_vals_all_rmse = None
 p_vals_all_time = None
 index_all = None
 
-max_length = 50
+
 
 for sample_size in sample_sizes:
     for samp in sampling:
         for prob in problems:
             for obj in objectives:
                 for n_vars in dims:
+                    max_length = math.ceil(sample_size / (10*n_vars))
                     if (problem_testbench == 'DTLZ' and obj < n_vars) or problem_testbench == 'DDMOPP':
                         
                         fig = plt.figure()
@@ -119,7 +123,7 @@ for sample_size in sample_sizes:
                             solution_ratio_all = None
                             time_taken_all = None
                             for mode, mode_count in zip(approaches,range(np.shape(approaches)[0])):
-                                path_to_file = './data/test_runs/' + main_directory \
+                                path_to_file = data_folder + '/test_runs/' + main_directory \
                                             + '/Offline_Mode_' + mode + '_' + algo + \
                                             '/' + samp + '/' + str(sample_size) + '/' + problem_testbench  + '/' + prob + '_' + str(obj) + '_' + str(n_vars)
                                 print(path_to_file)
@@ -132,10 +136,11 @@ for sample_size in sample_sizes:
                                     total_points_per_model_sequence = results_data["total_points_per_model_sequence"]
                                     total_points_per_model_sequence = np.asarray(total_points_per_model_sequence)
                                     length_points = np.shape(total_points_per_model_sequence)[0]
+                                    print("data length:",length_points)
                                     if length_points < max_length:                                        
                                         last_value = total_points_per_model_sequence[length_points-1]
-                                        print("last value=",last_value)
-                                        print(np.shape(total_points_per_model_sequence))
+                                        #print("last value=",last_value)
+                                        #print(np.shape(total_points_per_model_sequence))
                                         total_points_per_model_sequence= np.vstack((total_points_per_model_sequence,
                                                                                     np.tile(last_value,(max_length-length_points,1))))
                                     print(np.shape(total_points_per_model_sequence))
@@ -143,9 +148,9 @@ for sample_size in sample_sizes:
                                     return total_points_per_model_sequence
 
 
-                                temp = Parallel(n_jobs=11)(delayed(parallel_execute)(run, path_to_file, prob, obj) for run in range(nruns))
+                                temp = Parallel(n_jobs=pool_size)(delayed(parallel_execute)(run, path_to_file, prob, obj) for run in range(nruns))
                                 temp=np.asarray(temp)
-
+                                print("shape temp:",np.shape(temp))
                                 for i in range(obj):
                                     for j in range(nruns):
                                         for k in range(max_length):
@@ -158,7 +163,7 @@ for sample_size in sample_sizes:
                                                 markers=True, dashes=False, data=points_sequence_dfpd, palette=color_map)
                                 fig = ax.get_figure()
                                 fig.show()
-                                filename_fig =  './data/test_runs/' + main_directory + '/Points_consumed_progress_' + str(sample_size) + '_' + samp + '_' + algo + '_' + prob + '_' + str(
+                                filename_fig =  data_folder + '/test_runs/'+ main_directory + '/Plots/Points_consumed_progress_' + str(sample_size) + '_' + samp + '_' + algo + '_' + prob + '_' + str(
                                     obj) + '_' + str(n_vars)
                                 if save_fig == 'png':
                                     fig.savefig(filename_fig + '.png', bbox_inches='tight')

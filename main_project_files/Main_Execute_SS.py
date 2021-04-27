@@ -37,10 +37,11 @@ from plot_surface import plt_surface3d as plt_surface
 from plot_surface import plt_surface_all as plt_surface_all
 
 max_samples = 219
-max_iters = 5
+max_iters = 1
 init_folder = '/home/amrzr/Work/Codes/data/initial_samples/'
-plot_folder = '/home/amrzr/Work/Codes/data/plots/'
-plotting = False
+plot_folder = '/home/amrzr/Work/Codes/data/plots_htgp/'
+plotting = True
+plotting_sols = False
 
 def build_surrogates(problem_testbench, problem_name, nobjs, nvars, nsamples, sampling, is_data, x_data, y_data, surrogate_type, Z=None, z_samples=None):
     x_names = [f'x{i}' for i in range(1,nvars+1)]
@@ -64,10 +65,8 @@ def build_surrogates(problem_testbench, problem_name, nobjs, nvars, nsamples, sa
     start = time.time()
     if surrogate_type == "generic_fullgp":
         problem.train(fgp)
-        #plt_surface(problem,'fullgp_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling)
     elif surrogate_type == "generic_sparsegp":
         problem.train(sgp,  model_parameters=z_samples)
-        #plt_surface(problem,'sgp_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling)
     elif surrogate_type == "rf":
         problem.train(rf)
     elif surrogate_type == "htgp":
@@ -132,6 +131,16 @@ def run_optimizer(problem_testbench, problem_name, nobjs, nvars, sampling, nsamp
             filename = plot_folder + surrogate_type + '_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
 
             plt_surface_all(surrogate_problem,
+                        filename,
+                        init_folder,
+                        problem_testbench, 
+                        problem_name, 
+                        nobjs, 
+                        nvars, 
+                        sampling, 
+                        nsamples)
+            
+            plt_surface(surrogate_problem,
                         filename,
                         init_folder,
                         problem_testbench, 
@@ -397,7 +406,7 @@ def run_optimizer_rf(problem_testbench, problem_name, nobjs, nvars, sampling, ns
 def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, nsamples, is_data, surrogate_type, run):
     time_taken_all = 0
     n_iterations_building = nsamples/(10*nvars)
-    filename_scatterplot = plot_folder + 'Scatter_solutions_' + problem_testbench + '_' + problem_name +'_'+str(nobjs) + '_' + str(nvars) + '_'+ sampling +'_'+ str(nsamples) + '_' + str(run)
+    filename_scatterplot = plot_folder + 'Scatter_solutions_' + problem_testbench + '_' + problem_name +'_'+str(nobjs) + '_' + str(nvars) + '_' + str(run) + '_'+ sampling +'_'+ str(nsamples) + '_' + str(run)
     #n_iterations_building = 10
     if is_data is True:
         x, y = read_dataset(problem_testbench, problem_name, nobjs, nvars, sampling, nsamples, run)
@@ -436,7 +445,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         print("points per model:",total_points_per_model)
         
         # Plotting the solutions
-        if plotting is True:
+        if plotting_sols is True:
             if count == 0:
                 figobj = plt_anim.animate_init_(evolver_opt_tree.population.objectives, filename_scatterplot)
             else:
@@ -482,9 +491,17 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
     
     
     if plotting is True:
-        filename = plot_folder + 'htgp_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
-        plt_surface(surrogate_problem, filename)
+        filename = plot_folder + 'htgp_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(run) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
         plt_surface_all(surrogate_problem,
+                    filename,
+                    init_folder,
+                    problem_testbench, 
+                    problem_name, 
+                    nobjs, 
+                    nvars, 
+                    sampling, 
+                    nsamples)
+        plt_surface(surrogate_problem,
                     filename,
                     init_folder,
                     problem_testbench, 
