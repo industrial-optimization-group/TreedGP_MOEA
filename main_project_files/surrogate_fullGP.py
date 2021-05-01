@@ -21,7 +21,7 @@ class FullGPRegressor(BaseRegressor):
         if y.ndim == 1:
             y = y.reshape(-1, 1)
         kernel = GPy.kern.Matern52(np.shape(X)[1],ARD=True) #+ GPy.kern.White(2)
-        self.m = GPy.models.GPRegression(X,y)#, kernel=kernel)
+        self.m = GPy.models.GPRegression(X,y, kernel=kernel)
         self.m.optimize('bfgs')
 
     def predict(self, X):

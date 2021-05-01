@@ -16,9 +16,10 @@ from evaluate_population import evaluate_run
 data_folder = '/home/amrzr/Work/Codes/data'
 init_folder = data_folder + '/initial_samples'
 
-#evaluate_data = False
-evaluate_data = True
-is_plot = True
+evaluate_data = False
+#evaluate_data = True
+#is_plot = True
+is_plot = False
 file_exists_check = False
 #file_exists_check = True
 
@@ -26,8 +27,8 @@ file_exists_check = False
 convert_to_mat = False
 #import Telegram_bot.telegram_bot_messenger as tgm
 #dims = [5,8,10] #,8]
-dims = [2, 5, 7, 10]
-#dims = [2]
+#dims = [2, 5, 7, 10]
+dims = [2]
 #dims = [10]
 
 sample_sizes = [2000]
@@ -59,15 +60,15 @@ objs(10) = PFPF;
 #main_directory = 'Tests_toys'
 #main_directory = 'Test_Gpy3'
 #main_directory = 'Test_DR_4'  #DR = Datatset Reduction
-#main_directory = 'Test_DR_Scratch'
-main_directory = 'Test_DR_CSC_ARDMatern4'
+main_directory = 'Test_DR_Scratch'
+#main_directory = 'Test_DR_CSC_ARDMatern4'
 #main_directory = 'Test_DR_CSC_1'
 #main_directory = 'Test_RF'
 #main_directory = 'Test_DR_CSC_Final_1'
 
 
-#objectives = [3]
-objectives = [3,5,7]
+objectives = [2]
+#objectives = [3,5,7]
 #objectives = [3, 5, 7]
 #objectives = [3,5,7]
 #objectives = [2,3,5]
@@ -82,8 +83,8 @@ problem_testbench = 'DDMOPP'
 #problems = ['DTLZ2']
 #problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
 
-#problems = ['P4']
-problems = ['P1','P2','P3','P4']
+problems = ['P1']
+#problems = ['P1','P2','P3','P4']
 #problems = ['P1','P3','P4']
 
 
@@ -96,7 +97,7 @@ problems = ['P1','P2','P3','P4']
 #modes = [1, 7, 8]
 #approaches = ["generic_fullgp","generic_sparsegp"]
 #approaches = ["generic_fullgp","generic_sparsegp","strategy_1"]
-#approaches = ["generic_fullgp"]
+approaches = ["generic_fullgp"]
 #approaches = ["generic_sparsegp"]
 #approaches = ["strategy_1"]
 #approaches = ["strategy_2"]
@@ -105,17 +106,18 @@ problems = ['P1','P2','P3','P4']
 #approaches = ["htgp"]
 #approaches = ["generic_sparsegp"]
 #approaches = ["generic_fullgp","htgp"]
-approaches = ["generic_fullgp","generic_sparsegp","htgp"]
+#approaches = ["generic_fullgp","generic_sparsegp","htgp"]
 #approaches = ["generic_sparsegp","htgp"]
 #approaches = ["htgp"]
+#approaches = ["generic_fullgp","generic_sparsegp"]
 
 
 #sampling = ['BETA', 'MVNORM']
-#sampling = ['LHS']
+sampling = ['LHS']
 #sampling = ['BETA','OPTRAND','MVNORM']
 #sampling = ['OPTRAND']
 #sampling = ['MVNORM']
-sampling = ['LHS', 'MVNORM']
+#sampling = ['LHS', 'MVNORM']
 
 #emo_algorithm = ['RVEA','IBEA']
 emo_algorithm = ['RVEA']

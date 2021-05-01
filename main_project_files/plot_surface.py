@@ -76,13 +76,14 @@ def plt_surface3d(surrogate_problem,
     plt.close()
     
     y_underlying = evaluate_population(X,
-                                    init_folder,
-                                    problem_testbench, 
-                                    problem_name, 
-                                    nobjs, 
-                                    nvars, 
-                                    sampling, 
-                                    nsamples)
+                                        init_folder,
+                                        approaches = "abc",
+                                        problem_testbench = problem_testbench, 
+                                        problem_name = problem_name, 
+                                        nobjs = nobjs, 
+                                        nvars = nvars, 
+                                        sampling = sampling, 
+                                        nsamples = nsamples)
     y_underlying1 = y_underlying[:,0].reshape(np.shape(x1))
     y_underlying2 = y_underlying[:,1].reshape(np.shape(x1))
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
@@ -186,51 +187,105 @@ def plt_surface_all(surrogate_problem,
 
     y_underlying = evaluate_population(X,
                                         init_folder,
-                                        problem_testbench, 
-                                        problem_name, 
-                                        nobjs, 
-                                        nvars, 
-                                        sampling, 
-                                        nsamples)
+                                        approaches = "abc",
+                                        problem_testbench = problem_testbench, 
+                                        problem_name = problem_name, 
+                                        nobjs = nobjs, 
+                                        nvars = nvars, 
+                                        sampling = sampling, 
+                                        nsamples = nsamples)
     y_underlying1 = y_underlying[:,0].reshape(np.shape(x1))
     y_underlying2 = y_underlying[:,1].reshape(np.shape(x1))
     non_dom_front = ndx(y_underlying)
+
     y_underlying_nds = y_underlying[non_dom_front[0][0]]
     x_underlying_nds = X[non_dom_front[0][0]]
+    y_nds = y[non_dom_front[0][0]]
+
     rmse_mv_sols = np.zeros(np.shape(y)[0])
     for i in range(np.shape(y)[0]):
         rmse_mv_sols[i]= distance.euclidean(y[i,:],y_underlying[i,:])
     rmse_mv_sols = rmse_mv_sols.reshape(np.shape(x1))
 
-    v_max = 0.3
+    rmse_mv_nds = np.zeros(np.shape(y_nds)[0])
+    for i in range(np.shape(y_nds)[0]):
+        rmse_mv_nds[i]= distance.euclidean(y_nds[i,:],y_underlying_nds[i,:])
 
-    plt.contour(x1,x2,y1,30,linewidths=0.5,colors='red')
-    plt.contour(x1,x2,y2,30,linewidths=0.5,colors='blue')
+    v_max = 0.2
+    lev = 25
+    cmap_reversed = cm.get_cmap('inferno_r')
+    #plt.contour(x1,x2,y1,30,linewidths=0.5,colors='red')
+    #plt.contour(x1,x2,y2,30,linewidths=0.5,colors='blue')
+    fig = plt.figure(figsize=(5,4))
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(r'$x_1$', fontsize=17)
+    ax.set_ylabel(r'$x_2$', fontsize=17)
+    CS = ax.contour(x1,x2,y1,30,linewidths=0.7,colors='black')
+    CS = ax.contour(x1,x2,y2,30,linewidths=0.7,colors='black',linestyles='dashed')
+    #ax.set_xlabel('x_1')
+    #ax.set_ylabel('x_2')    
+    
+
+    print("Max RMSE:",np.max(rmse_mv_sols))
     #plt.contourf(x1, x2, rmse_mv_sols, 30, cmap='Greens', vmin = 0, vmax = 0.5)
-    CS = plt.contourf(x1, x2, rmse_mv_sols, levels= 10, cmap='Greens', vmin = 0, vmax = v_max)
-    m = plt.cm.ScalarMappable(cmap='Greens')
+    CS = plt.contourf(x1, x2, rmse_mv_sols, levels= lev, cmap=cmap_reversed, vmin = 0, vmax = v_max)
+    m = plt.cm.ScalarMappable(cmap=cmap_reversed)
     m.set_array(rmse_mv_sols)
     m.set_clim(0., v_max)
-    plt.colorbar(m, boundaries=np.linspace(0, v_max, 11))
-    plt.scatter(x_underlying_nds[:,0], x_underlying_nds[:,1])
+    plt.colorbar(m, boundaries=np.linspace(0, v_max, lev+1))
+    plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',color='blue')
     plt.savefig(filename + '_contour.pdf', bbox_inches='tight')
     plt.cla()   # Clear axis
     plt.clf()   # Clear figure
     plt.close()
 
+    print("Max RMSE:",np.max(rmse_mv_nds))
+    # Plot the non dominated solutions
+    fig = plt.figure(figsize=(5,4))
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(r'$x_1$', fontsize=17)
+    ax.set_ylabel(r'$x_2$', fontsize=17)
+    CS = ax.contour(x1,x2,y1,30,linewidths=0.7,colors='black')
+    CS = ax.contour(x1,x2,y2,30,linewidths=0.7,colors='black',linestyles='dashed')
+    ax.set_xlim(right=-0.4, left=-1)
+    ax.set_ylim(bottom=-1, top=-0.4)
+    CS = plt.contourf(x1, x2, rmse_mv_sols, levels= lev, cmap=cmap_reversed, vmin = 0, vmax = v_max)
+    m = plt.cm.ScalarMappable(cmap=cmap_reversed)
+    m.set_array(rmse_mv_sols)
+    m.set_clim(0., v_max)
+    plt.colorbar(m, boundaries=np.linspace(0, v_max, lev+1))
+    #sc = plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',c=rmse_mv_nds, cmap='winter', vmin = 0, vmax = 0.1)
+    #sc = plt.scatter(x_underlying_nds[:,0], x_underlying_nds[:,1], marker='*',s=rmse_mv_nds*500, color='blue')
+    plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',color='blue')
+    #plt.colorbar(sc)
+    plt.savefig(filename + '_contour_zoomed.pdf', bbox_inches='tight')
+    plt.cla()   # Clear axis
+    plt.clf()   # Clear figure
+    plt.close()
 
-    plt.contour(x1,x2,y_underlying1,30,linewidths=0.5,colors='red')
-    plt.contour(x1,x2,y_underlying2,30,linewidths=0.5,colors='blue')
-    CS = plt.contourf(x1, x2, np.zeros(np.shape(y)[0]).reshape(np.shape(x1)),  levels= 10, cmap='Greens', vmin = 0, vmax = v_max)
-    m = plt.cm.ScalarMappable(cmap='Greens')
+
+
+    #plt.contour(x1,x2,y_underlying1,30,linewidths=0.5,colors='red')
+    #plt.contour(x1,x2,y_underlying2,30,linewidths=0.5,colors='blue')
+    fig = plt.figure(figsize=(5,4))
+    ax = fig.add_subplot(111)
+    ax.set_xlabel(r'$x_1$', fontsize=17)
+    ax.set_ylabel(r'$x_2$', fontsize=17)
+    CS = ax.contour(x1,x2,y_underlying1,30,linewidths=0.7,colors='black')
+    CS = ax.contour(x1,x2,y_underlying2,30,linewidths=0.7,colors='black',linestyles='dashed')
+    #CS = plt.contourf(x1, x2, np.zeros(np.shape(y)[0]).reshape(np.shape(x1)),  levels= lev, cmap=cmap_reversed, vmin = 0, vmax = v_max)
+    m = plt.cm.ScalarMappable(cmap=cmap_reversed)
     m.set_array(np.zeros(np.shape(y)[0]).reshape(np.shape(x1)))
     m.set_clim(0., v_max)
-    plt.colorbar(m, boundaries=np.linspace(0, v_max, 11))
-    plt.scatter(x_underlying_nds[:,0], x_underlying_nds[:,1])
+    plt.colorbar(m, boundaries=np.linspace(0, v_max, lev+1))
+    plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',color='blue')
     plt.savefig(filename + '_contour_underlying.pdf', bbox_inches='tight')
     plt.cla()   # Clear axis
     plt.clf()   # Clear figure
     plt.close()
+
+
+
 
 def clippedcolorbar(CS, **kwargs):
     from matplotlib.cm import ScalarMappable
