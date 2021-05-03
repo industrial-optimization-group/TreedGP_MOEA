@@ -16,10 +16,10 @@ from evaluate_population import evaluate_run
 data_folder = '/home/amrzr/Work/Codes/data'
 init_folder = data_folder + '/initial_samples'
 
-evaluate_data = False
-#evaluate_data = True
-#is_plot = True
-is_plot = False
+#evaluate_data = False
+evaluate_data = True
+is_plot = True
+#is_plot = False
 file_exists_check = False
 #file_exists_check = True
 
@@ -60,14 +60,14 @@ objs(10) = PFPF;
 #main_directory = 'Tests_toys'
 #main_directory = 'Test_Gpy3'
 #main_directory = 'Test_DR_4'  #DR = Datatset Reduction
-main_directory = 'Test_DR_Scratch'
-#main_directory = 'Test_DR_CSC_ARDMatern4'
+#main_directory = 'Test_DR_Scratch'
+main_directory = 'Test_DR_CSC_ARDMatern4'
 #main_directory = 'Test_DR_CSC_1'
 #main_directory = 'Test_RF'
 #main_directory = 'Test_DR_CSC_Final_1'
 
 
-objectives = [2]
+objectives = [3]
 #objectives = [3,5,7]
 #objectives = [3, 5, 7]
 #objectives = [3,5,7]
@@ -97,7 +97,7 @@ problems = ['P1']
 #modes = [1, 7, 8]
 #approaches = ["generic_fullgp","generic_sparsegp"]
 #approaches = ["generic_fullgp","generic_sparsegp","strategy_1"]
-approaches = ["generic_fullgp"]
+#approaches = ["generic_fullgp"]
 #approaches = ["generic_sparsegp"]
 #approaches = ["strategy_1"]
 #approaches = ["strategy_2"]
@@ -108,7 +108,7 @@ approaches = ["generic_fullgp"]
 #approaches = ["generic_fullgp","htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp","htgp"]
 #approaches = ["generic_sparsegp","htgp"]
-#approaches = ["htgp"]
+approaches = ["htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp"]
 
 

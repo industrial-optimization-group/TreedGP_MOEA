@@ -40,7 +40,7 @@ max_samples = 219
 max_iters = 1
 init_folder = '/home/amrzr/Work/Codes/data/initial_samples/'
 plot_folder = '/home/amrzr/Work/Codes/data/plots_htgp/'
-plotting = True
+plotting = False
 plotting_sols = False
 
 def build_surrogates(problem_testbench, problem_name, nobjs, nvars, nsamples, sampling, is_data, x_data, y_data, surrogate_type, Z=None, z_samples=None):
@@ -405,6 +405,8 @@ def run_optimizer_rf(problem_testbench, problem_name, nobjs, nvars, sampling, ns
 
 def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, nsamples, is_data, surrogate_type, run):
     time_taken_all = 0
+    #range_axis = [-0.05,1.8]
+    range_axis = [0.0,0.7]
     n_iterations_building = nsamples/(10*nvars)
     filename_scatterplot = plot_folder + 'Scatter_solutions_' + problem_testbench + '_' + problem_name +'_'+str(nobjs) + '_' + str(nvars) + '_' + str(run) + '_'+ sampling +'_'+ str(nsamples) + '_' + str(run)
     #n_iterations_building = 10
@@ -423,10 +425,29 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
     #evolver_opt_tree = RVEA(surrogate_problem, use_surrogates=True, n_iterations=500, n_gen_per_iter=20)
     evolver_opt_tree = RVEA(surrogate_problem, use_surrogates=True, n_iterations=n_iterations_building, n_gen_per_iter=50)
     count=0
+
+
     while evolver_opt_tree.continue_evolution() and delta_total_point > 0:
         evolver_opt_tree.iterate()    
         population_opt_tree = evolver_opt_tree.population
         X_solutions = population_opt_tree.individuals
+
+        y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
+        y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
+        fig = plt.figure(figsize=(5, 5))
+        ax = fig.add_subplot(111)
+        ax.scatter(y1, y2)
+        ax.set_xlim(range_axis)
+        ax.set_ylim(range_axis)
+        plt.title(r'$I= {cnt}$'.format(cnt=str(count)))
+        plt.xlabel(r'$f_1(\mathbf{x})$')
+        plt.ylabel(r'$f_2(\mathbf{x})$')
+        fig.tight_layout()
+        plt.savefig(plot_folder+"scatter_solns_new"+str(count)+"_"+str(run)+".pdf")
+        ax.cla()
+        fig.clf()
+        plt.close()
+
         for i in range(nobjs):
             print("Objective :", i+1)
             surrogate_problem.objectives[i]._model.addGPs(X_solutions)
@@ -450,35 +471,48 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
                 figobj = plt_anim.animate_init_(evolver_opt_tree.population.objectives, filename_scatterplot)
             else:
                 figobj = plt_anim.animate_next_(evolver_opt_tree.population.objectives, figobj, filename_scatterplot, count)
-            count=count+1
-        """
+        count=count+1
 
+        #y1_tree, y1_gp, X1_tree, X1_gp =surrogate_problem.objectives[0]._model.predict_seperate(X_solutions)
+        #y2_tree, y2_gp, X2_tree, X2_gp =surrogate_problem.objectives[1]._model.predict_seperate(X_solutions)
         
-        print("Size solutions:",np.shape(population_opt_tree.objectives))
-        y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
-        y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
+        """
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        ax.scatter(y1, y2)
-        plt.savefig(plot_folder+"scatter_solns_xx"+str(count)+"_"+str(run)+".pdf")
+        ax.scatter(y1_tree, y2_tree, marker='o',color='blue')
+        ax.scatter(y1_gp, y2_gp, marker='*',color='green')
+        plt.title(r'$I=$',count)
+        plt.xlabel(r'$f_1(x)$')
+        plt.ylabel(r'$f_1(x)$')
+        plt.savefig(plot_folder+"scatter_solns_new"+str(count)+"_"+str(run)+".pdf")
         ax.cla()
         fig.clf()
         plt.close()
         """
+
+        
+       
         evolver_opt_tree._refresh_population()
     
     #figobj = plt_anim.animate_next_(evolver_opt_tree.population.objectives, figobj, filename_scatterplot, count+1)
     #for i in range(nobjs):
 
-    """
-    fig = plt.figure()
+    print("Size solutions:",np.shape(population_opt_tree.objectives))
+    y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
+    y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
+    fig = plt.figure(figsize=(5, 5))
     ax = fig.add_subplot(111)
-    ax.scatter(population_opt_tree.objectives[:,0], population_opt_tree.objectives[:,1])
-    plt.savefig("scatter_solns_"+str(count)+"_"+str(run)+".pdf")
+    ax.scatter(y1, y2)
+    ax.set_xlim(range_axis)
+    ax.set_ylim(range_axis)
+    plt.title(r'$I= {cnt}$'.format(cnt=str(count)))
+    plt.xlabel(r'$f_1(\mathbf{x})$')
+    plt.ylabel(r'$f_2(\mathbf{x})$')
+    fig.tight_layout()
+    plt.savefig(plot_folder+"scatter_solns_new"+str(count)+"_"+str(run)+".pdf")
     ax.cla()
     fig.clf()
     plt.close()
-    """
 
 
     end = time.time()

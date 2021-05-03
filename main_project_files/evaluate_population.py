@@ -6,7 +6,7 @@ from desdeo_problem.testproblems.TestProblems import test_problem_builder
 eng = matlab.engine.start_matlab()
 s = eng.genpath('./matlab_files')
 eng.addpath(s, nargout=0)
-is_plot = 0
+is_plot = 1
 plot_init = 0
 
 data_folder = '/home/amrzr/Work/Codes/data'

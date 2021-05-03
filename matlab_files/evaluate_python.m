@@ -31,12 +31,28 @@ function obj_vals = evaluate_python(population, init_folder, approaches, Strateg
         plot_dbmopp_2D_regions(problem_parameters,0,M,0, ...
             0);
         
+        %hold on;
+        box on;
+        set(gca,'xTick',[]);
+        set(gca,'yTick',[]);
+        xlabel('');
+        ylabel('');
+        set(gcf, 'PaperSize', [5 5])
+        saveas(gcf,fullfile('/home/amrzr/Work/Codes/data/test_runs/Test_DR_CSC_ARDMatern4/Plots_solutions',['Instance_' approaches '_' Strategy '_' Problem '_' num2str(M) '_' num2str(nvars) '_' num2str(sample_size) '_' num2str(run) '.pdf']))
+        sz=30;
+        figure;
+        scatter(X(:,1),X(:,2),sz,'green','filled');
         hold on;
         scatter(X(:,1),X(:,2));
         non = P_sort(obj_vals,'first')==1;
         non_dom_pop = X(non,:);
         PF=obj_vals(non,:);
-        scatter(non_dom_pop(:,1), non_dom_pop(:,2),'*')
+        scatter(non_dom_pop(:,1), non_dom_pop(:,2),'*','red')%,'linewidth',2)
+        axis([-1,1,-1,1]);
+        box on;
+        axis square;
+        set(gca,'xtick',[],'ytick',[]);
+        set(gcf, 'PaperSize', [5 5])
         hold off;
         saveas(gcf,fullfile('/home/amrzr/Work/Codes/data/test_runs/Test_DR_CSC_ARDMatern4/Plots_solutions',['Solutions_' approaches '_' Strategy '_' Problem '_' num2str(M) '_' num2str(nvars) '_' num2str(sample_size) '_' num2str(run) '.pdf']))
         close all;

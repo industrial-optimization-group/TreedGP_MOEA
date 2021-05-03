@@ -206,3 +206,28 @@ class HybridTreeGP_v2(BaseRegressor):
         #print(y_mean)
         y_stdev = None
         return (y_mean, y_stdev)
+
+    def predict_seperate(self, X):
+        Y_predict = self.regr.predict(X=X)
+        Y_test_leaf = self.regr.apply(X)
+        unique_solutions, count_solutions = np.unique(Y_test_leaf, return_counts=True)
+        Y_predict_tree = np.zeros(np.shape(Y_predict)[0])
+        Y_predict_gp = np.zeros(np.shape(Y_predict)[0])
+        X_gp = np.zeros(np.shape(X))
+        X_tree = np.zeros(np.shape(X))
+        count_gp = 0
+        count_tree = 0
+        #if self.error_leaves is not None:            
+        for i in range(np.shape(X)[0]):
+            if Y_test_leaf[i] in self.error_leaves:                
+                Y_predict_gp[count_gp] = self.dict_gps[str(Y_test_leaf[i])].predict(X[i].reshape(1,-1))[0][0]
+                X_gp[count_gp]=X[i]
+                count_gp += 1
+            else:
+                Y_predict_tree[count_tree] = Y_predict[i]
+                X_tree[count_tree]=X[i]
+                count_tree += 1
+        return (Y_predict_tree[0:count_tree],
+                 Y_predict_gp[0:count_gp],
+                 X_tree[0:count_tree],
+                 X_gp[0:count_gp])
