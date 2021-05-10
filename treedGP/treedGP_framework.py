@@ -3,7 +3,7 @@ sys.path.insert(1, '/home/amrzr/Work/Codes/TreedGP_MOEA/')
 
 from desdeo_emo.EAs.RVEA import RVEA
 from desdeo_problem.Problem import DataProblem
-from desdeo_problem.surrogatemodels.treedGP import treeGP as treedGP
+from desdeo_problem.surrogatemodels.surrogate_treedGP import treeGP as treedGP
 from desdeo_problem.testproblems.TestProblems import test_problem_builder
 import numpy as np
 import pandas as pd
@@ -21,7 +21,7 @@ def build_surrogates(nobjs, nvars, x_data, y_data, x_low, x_high):
     return problem
 
 
-def run_optimizer_htgp(x_data, y_data, x_low, x_high, I_max=None, G_max=50, framework=False):
+def run_treed_GP(x_data, y_data, x_low, x_high, I_max=None, G_max=50, framework=False):
     nvars = np.shape(x_data)[1]
     nobjs = np.shape(y_data)[1]
     nsamples = np.shape(x_data)[0]
@@ -30,7 +30,7 @@ def run_optimizer_htgp(x_data, y_data, x_low, x_high, I_max=None, G_max=50, fram
 
     start = time.time()
     print("Building trees...")
-    surrogate_problem, time_taken = build_surrogates(nobjs, nvars, x_data, y_data, x_low, x_high)
+    surrogate_problem = build_surrogates(nobjs, nvars, x_data, y_data, x_low, x_high)
     print("Building leaf node GPs...")
     total_points_all = 0
     total_points_all_sequence = []
@@ -76,4 +76,4 @@ def run_optimizer_htgp(x_data, y_data, x_low, x_high, I_max=None, G_max=50, fram
             }
         return results_dict
     else:
-        return surrogate_problem
+        return (surrogate_problem, total_points_per_model, total_points_per_model_sequence)

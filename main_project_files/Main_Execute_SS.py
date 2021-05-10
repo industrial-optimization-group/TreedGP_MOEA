@@ -37,7 +37,7 @@ from plot_surface import plt_surface3d as plt_surface
 from plot_surface import plt_surface_all as plt_surface_all
 
 max_samples = 219
-max_iters = 1
+max_iters = 10
 init_folder = '/home/amrzr/Work/Codes/data/initial_samples/'
 plot_folder = '/home/amrzr/Work/Codes/data/plots_htgp/'
 plotting = False

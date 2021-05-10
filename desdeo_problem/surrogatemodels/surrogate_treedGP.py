@@ -1,14 +1,10 @@
 import numpy as np
 import pandas as pd
-import hybrid_tree_gp
 from desdeo_problem.surrogatemodels.SurrogateModels import BaseRegressor, ModelError
 from sklearn import tree
 import GPy
 import graphviz
 import datetime
-
-###### original htgp
-
 class treeGP(BaseRegressor):
     def __init__(self, min_samples_leaf):
         self.X: np.ndarray = None
