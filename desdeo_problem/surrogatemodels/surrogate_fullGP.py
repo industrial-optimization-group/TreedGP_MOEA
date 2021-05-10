@@ -1,10 +1,11 @@
 import numpy as np
 import pandas as pd
-import hybrid_tree_gp
+import GPy
 from desdeo_problem.surrogatemodels.SurrogateModels import BaseRegressor, ModelError
 
-class HybridTreeGP(BaseRegressor):
-    def __init__(self):
+class FullGPRegressor(BaseRegressor):
+    def __init__(self, L: float = None):
+        self.L: float = L
         self.X: np.ndarray = None
         self.y: np.ndarray = None
         self.m = None
@@ -13,22 +14,20 @@ class HybridTreeGP(BaseRegressor):
         if isinstance(X, (pd.DataFrame, pd.Series)):
             X = X.values
         if isinstance(y, (pd.DataFrame, pd.Series)):
-            y = y.values
+            y = y.values.reshape(-1, 1)
 
         # Make a 2-D array if needed
         y = np.atleast_1d(y)
         if y.ndim == 1:
-            y = y
-
-        self.m = hybrid_tree_gp.fit(X,y)
-        self.X = X
-        self.y = y
-
+            y = y.reshape(-1, 1)
+        kernel = GPy.kern.Matern52(np.shape(X)[1],ARD=True) #+ GPy.kern.White(2)
+        self.m = GPy.models.GPRegression(X,y, kernel=kernel)
+        self.m.optimize('bfgs')
 
     def predict(self, X):
-        #y_mean = np.asarray(self.m.predict(X)[0]).reshape(1,-1)
-        y_mean = np.asarray(self.m.predict(X))
+        #y_mean, y_stdev = np.asarray(self.m.predict(X)[0]).reshape(1,-1)
+        y_mean, y_stdev = np.asarray(self.m.predict(X))
         y_mean = (y_mean.reshape(1,-1))
-        y_stdev = None
+        y_stdev = (y_stdev.reshape(1,-1))
         return (y_mean, y_stdev)
 
