@@ -1,4 +1,4 @@
-# TreedGP_MOEA
+# TreedGP for Solving Offline MOPs
 
 ### Clone repository
 `gh repo clone industrial-optimization-group/TreedGP_MOEA`
@@ -14,6 +14,9 @@
 `source venv/bin/activate`
 * Install poetry: `pip3 install poetry` and `poetry init`
 * Add packages: `poetry add  numpy pandas matplotlib plotly sklearn scipy pygmo optproblems tqdm diversipy pyDOE joblib jupyter statsmodels GPy graphviz paramz plotly_express pymoo seaborn`
+
+### Example
+An example notebook can be found in the example folder solving an offline bi-objective DTLZ2 problem, 10 decision variables with 2000 samples (LHS).
 
 ### Running the experiments
 * For replicating the experiments in the paper run the `treedGP/StartAll_HPC.py`
