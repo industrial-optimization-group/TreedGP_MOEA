@@ -4,8 +4,7 @@
 `gh repo clone industrial-optimization-group/TreedGP_MOEA`
 
 ### Requirements:
-* Python 3.7 or up
-* [Poetry dependency manager](https://github.com/sdispater/poetry): Only for developers
+* Python 3.7 or up                                          
 
 ### Installation process for normal users:
 * Create a new virtual enviroment for the project
@@ -17,4 +16,7 @@
 * Add packages: `poetry add  numpy pandas matplotlib plotly sklearn scipy pygmo optproblems tqdm diversipy pyDOE joblib jupyter statsmodels GPy graphviz paramz plotly_express pymoo seaborn`
 
 ### Running the experiments
-* For replicating the experiments in the paper run the treedGP/Start
+* For replicating the experiments in the paper run the `treedGP/StartAll_HPC.py`
+* The initial dataset in `.mat` Matlab format in `data_template/initial_samples` folder. The test results are saved as pickle files in  `data_template/test_runs`. Change the folder locations and datset for different problem instances.
+* The DBMOPP problems are implemented in Matlab and are available in `matlab_files` folder.
+

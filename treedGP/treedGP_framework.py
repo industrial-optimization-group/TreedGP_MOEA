@@ -58,6 +58,7 @@ def run_treed_GP(x_data, y_data, x_low, x_high, I_max=None, G_max=50, framework=
         evolver_opt_tree._refresh_population()
 
     end = time.time()
+    print("Building finished...")
     time_taken = end - start
     if framework is True:
         while evolver_opt_tree.continue_evolution():
