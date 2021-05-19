@@ -41,6 +41,7 @@ max_iters = 10
 init_folder = '/home/amrzr/Work/Codes/data/initial_samples/'
 plot_folder = '/home/amrzr/Work/Codes/data/plots_htgp/'
 plotting = False
+plotting_sols_anim = False
 plotting_sols = False
 
 def build_surrogates(problem_testbench, problem_name, nobjs, nvars, nsamples, sampling, is_data, x_data, y_data, surrogate_type, Z=None, z_samples=None):
@@ -431,22 +432,22 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         evolver_opt_tree.iterate()    
         population_opt_tree = evolver_opt_tree.population
         X_solutions = population_opt_tree.individuals
-
-        y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
-        y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
-        fig = plt.figure(figsize=(5, 5))
-        ax = fig.add_subplot(111)
-        ax.scatter(y1, y2)
-        ax.set_xlim(range_axis)
-        ax.set_ylim(range_axis)
-        plt.title(r'$I= {cnt}$'.format(cnt=str(count)))
-        plt.xlabel(r'$f_1(\mathbf{x})$')
-        plt.ylabel(r'$f_2(\mathbf{x})$')
-        fig.tight_layout()
-        plt.savefig(plot_folder+"scatter_solns_new"+str(count)+"_"+str(run)+".pdf")
-        ax.cla()
-        fig.clf()
-        plt.close()
+        if plotting_sols is True:
+            y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
+            y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
+            fig = plt.figure(figsize=(5, 5))
+            ax = fig.add_subplot(111)
+            ax.scatter(y1, y2)
+            ax.set_xlim(range_axis)
+            ax.set_ylim(range_axis)
+            plt.title(r'$I= {cnt}$'.format(cnt=str(count)))
+            plt.xlabel(r'$f_1(\mathbf{x})$')
+            plt.ylabel(r'$f_2(\mathbf{x})$')
+            fig.tight_layout()
+            plt.savefig(plot_folder+"scatter_solns_new"+str(count)+"_"+str(run)+".pdf")
+            ax.cla()
+            fig.clf()
+            plt.close()
 
         for i in range(nobjs):
             print("Objective :", i+1)
@@ -466,7 +467,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         print("points per model:",total_points_per_model)
         
         # Plotting the solutions
-        if plotting_sols is True:
+        if plotting_sols_anim is True:
             if count == 0:
                 figobj = plt_anim.animate_init_(evolver_opt_tree.population.objectives, filename_scatterplot)
             else:
@@ -498,21 +499,23 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
     #for i in range(nobjs):
 
     print("Size solutions:",np.shape(population_opt_tree.objectives))
-    y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
-    y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
-    fig = plt.figure(figsize=(5, 5))
-    ax = fig.add_subplot(111)
-    ax.scatter(y1, y2)
-    ax.set_xlim(range_axis)
-    ax.set_ylim(range_axis)
-    plt.title(r'$I= {cnt}$'.format(cnt=str(count)))
-    plt.xlabel(r'$f_1(\mathbf{x})$')
-    plt.ylabel(r'$f_2(\mathbf{x})$')
-    fig.tight_layout()
-    plt.savefig(plot_folder+"scatter_solns_new"+str(count)+"_"+str(run)+".pdf")
-    ax.cla()
-    fig.clf()
-    plt.close()
+
+    if plotting_sols is True:
+        y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
+        y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
+        fig = plt.figure(figsize=(5, 5))
+        ax = fig.add_subplot(111)
+        ax.scatter(y1, y2)
+        ax.set_xlim(range_axis)
+        ax.set_ylim(range_axis)
+        plt.title(r'$I= {cnt}$'.format(cnt=str(count)))
+        plt.xlabel(r'$f_1(\mathbf{x})$')
+        plt.ylabel(r'$f_2(\mathbf{x})$')
+        fig.tight_layout()
+        plt.savefig(plot_folder+"scatter_solns_new"+str(count)+"_"+str(run)+".pdf")
+        ax.cla()
+        fig.clf()
+        plt.close()
 
 
     end = time.time()

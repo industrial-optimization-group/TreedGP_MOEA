@@ -1,5 +1,5 @@
 {
     "python.venvPath": "~/Work/Codes/.venvs/TreedGP_MOEA/bin/python",
     //"python.pythonPath": "/bin/python3",
-    //"python.pythonPath": "/home/amrzr/Work/Codes/.venvs/TreedGP_MOEA/bin/python3.8"
+    "python.pythonPath": "/home/amrzr/Work/Codes/.venvs/TreedGP_MOEA/bin/python3.8"
 }

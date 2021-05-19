@@ -26,13 +26,7 @@ file_exists_check = False
 #convert_to_mat = True
 convert_to_mat = False
 #import Telegram_bot.telegram_bot_messenger as tgm
-#dims = [5,8,10] #,8]
-#dims = [2, 5, 7, 10]
-dims = [2]
-#dims = [10]
 
-sample_sizes = [2000]
-#sample_sizes = [10000, 50000]
 #dims = 4
 ############################################
 #folder_data = 'AM_Samples_109_Final'
@@ -66,8 +60,15 @@ main_directory = 'Test_DR_CSC_ARDMatern4'
 #main_directory = 'Test_RF'
 #main_directory = 'Test_DR_CSC_Final_1'
 
+#dims = [5,8,10] #,8]
+#dims = [2, 5, 7, 10]
+dims = [2]
+#dims = [10]
 
-objectives = [3]
+sample_sizes = [2000]
+#sample_sizes = [10000, 50000]
+
+objectives = [7]
 #objectives = [3,5,7]
 #objectives = [3, 5, 7]
 #objectives = [3,5,7]
@@ -106,17 +107,17 @@ problems = ['P1']
 #approaches = ["htgp"]
 #approaches = ["generic_sparsegp"]
 #approaches = ["generic_fullgp","htgp"]
-#approaches = ["generic_fullgp","generic_sparsegp","htgp"]
+approaches = ["generic_fullgp","generic_sparsegp","htgp"]
 #approaches = ["generic_sparsegp","htgp"]
-approaches = ["htgp"]
+#approaches = ["htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp"]
 
 
 #sampling = ['BETA', 'MVNORM']
-sampling = ['LHS']
+#sampling = ['LHS']
 #sampling = ['BETA','OPTRAND','MVNORM']
 #sampling = ['OPTRAND']
-#sampling = ['MVNORM']
+sampling = ['MVNORM']
 #sampling = ['LHS', 'MVNORM']
 
 #emo_algorithm = ['RVEA','IBEA']

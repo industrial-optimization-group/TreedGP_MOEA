@@ -24,6 +24,8 @@ from sklearn.metrics import pairwise_distances_argmin_min
 from matplotlib import rc
 from desdeo_problem.testproblems.TestProblems import test_problem_builder
 from ranking_approaches import  calc_rank
+import seaborn as sns
+import pandas as pd
 
 #rc('font',**{'family':'serif','serif':['Helvetica']})
 #rc('text', usetex=True)
@@ -39,7 +41,7 @@ metric = 'HV'
 save_fig = 'pdf'
 #dims = [5,8,10] #,8,10]
 #dims = [2, 5, 7, 10]
-dims = [2]
+dims = [2,5]
 sample_sizes = [10000]
 #sample_sizes = [2000, 10000]#, 50000]
 #sample_sizes = [10000, 50000]
@@ -69,9 +71,9 @@ problem_testbench = 'DDMOPP'
 
 #problems = ['DTLZ7']
 #problems = ['DTLZ2','DTLZ4']
-problems = ['P1']
+#problems = ['P1']
 #problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
-#problems = ['P1','P2','P3','P4']
+problems = ['P1','P2','P3','P4']
 #problems = ['P4']
 #problems = ['WELDED_BEAM'] #dims=4
 #problems = ['TRUSS2D'] #dims=3
@@ -83,11 +85,11 @@ problems = ['P1']
 #modes = [1,2]
 #mode_length = int(np.size(modes))
 #sampling = ['BETA', 'MVNORM']
-sampling = ['LHS']
+#sampling = ['LHS']
 #sampling = ['BETA','OPTRAND','MVNORM']
 #sampling = ['OPTRAND']
 #sampling = ['MVNORM']
-#sampling = ['LHS', 'MVNORM']
+sampling = ['LHS', 'MVNORM']
 
 #emo_algorithm = ['RVEA','IBEA']
 emo_algorithm = ['RVEA']
@@ -111,6 +113,7 @@ emo_algorithm = ['RVEA']
 #approaches = ["generic_fullgp","generic_sparsegp_50","generic_sparsegp","htgp_mse"]
 #approaches = ["generic_fullgp","generic_sparsegp","htgp"]
 approaches = ["generic_sparsegp","htgp"]
+approaches_nice = ['Sparse GP', 'Treed GP']
 
 mode_length = int(np.size(approaches))
 #approaches = ['7', '9', '11']
@@ -130,7 +133,7 @@ hv_ref = {"DTLZ2": {"2": [3, 3], "3": [6, 6, 6], "5": [6, 6, 6, 6, 6],  "7": [6,
 
 
 nruns = 11
-pool_size = 4
+pool_size = 1
 
 plot_boxplot = True
 
@@ -142,6 +145,8 @@ p_vals_all_hv = None
 p_vals_all_rmse = None
 p_vals_all_time = None
 index_all = None
+
+df_all = None
 
 for sample_size in sample_sizes:
     for samp in sampling:
@@ -335,89 +340,56 @@ for sample_size in sample_sizes:
                                 p_vals_all_hv = np.vstack((p_vals_all_hv, p_cor_hv))
                                 p_vals_all_rmse = np.vstack((p_vals_all_rmse, p_cor_rmse))
                                 p_vals_all_time = np.vstack((p_vals_all_time, p_cor_time))
+                            #l = []
+                            #l.append('xyz')
+                            #inst=l*11
+                            df_temp = None
+                            instance = samp + '_' + str(sample_size) + '_' + 'DBMOPP'  + '_' + prob + '_' + str(obj) + '_' + str(n_vars)
+                            for approach_name, approach_count in zip(approaches_nice,range(np.shape(approaches)[0])):
+                                for i in range(nruns):                                    
+                                    if df_temp is None:
+                                        data_temp = {'Approaches':[approach_name], 'HV':[igd_all[i,approach_count]], 'RMSE': [rmse_mv_all[i,approach_count]], 'Time (s)':[time_taken_all[i,approach_count]], 'Instances': [instance] }
+                                        df_temp = pd.DataFrame(data_temp)
+                                    else:
+                                        data_temp = {'Approaches':approach_name, 'HV':igd_all[i,approach_count], 'RMSE': rmse_mv_all[i,approach_count], 'Time (s)':time_taken_all[i,approach_count], 'Instances': instance}
+                                        df_temp = df_temp.append(data_temp, ignore_index=True)
                             
+                        if df_all is None:
+                            df_all = df_temp
+                        else:
+                            df_all = df_all.append(df_temp, ignore_index=True)
+
+sns.set(rc={'figure.figsize':(20,15)})
+sns.set_theme(style="ticks", palette="pastel")
+hv_plt = sns.boxplot(x="Instances", y="HV",
+            hue="Approaches",
+            data=df_all)
+#hv_plt = sns.despine(trim=True)
+hv_plt.set_xticklabels(hv_plt.get_xticklabels(),rotation=90)
+plt.tight_layout()
+plt.savefig('hv_grouped.pdf')
+plt.clf()
 
 
-                            ax = fig.add_subplot(131)
-                            bp = ax.boxplot(igd_all, showfliers=False, widths=0.45)
-                            #ax.set_title(metric + '_'+ samp + '_Algo_' + algo + '_' + prob + '_' + str(obj) + '_' + str(n_vars))
-                            ax.set_title('Hypervolume comparison')
-                            ax.set_xlabel('Approaches')
-                            #ax.set_ylabel(metric)
-                            ax.set_ylabel('Hypervolume')
-                            ax.set_xticklabels(approaches, rotation=75, fontsize=10)
+rmse_plt = sns.boxplot(x="Instances", y="RMSE",
+            hue="Approaches",
+            data=df_all)
+#rmse_plt = sns.despine(trim=True)
+rmse_plt.set_xticklabels(rmse_plt.get_xticklabels(),rotation=90)
+plt.tight_layout()
+plt.savefig('rmse_grouped.pdf')
+plt.clf()
 
-                            ax = fig.add_subplot(132)
-                            bp = ax.boxplot(rmse_mv_all, showfliers=False, widths=0.45)
-                            #ax.set_title(metric + '_'+ samp + '_Algo_' + algo + '_' + prob + '_' + str(obj) + '_' + str(n_vars))
-                            ax.set_title('Accuracy comparison')
-                            ax.set_xlabel('Approaches')
-                            #ax.set_ylabel(metric)
-                            ax.set_ylabel('RMSE_MV')
-                            ax.set_xticklabels(approaches, rotation=75, fontsize=10)
-
-                            print(time_taken_all)
-                            ax = fig.add_subplot(133)
-                            bp = ax.boxplot(time_taken_all, showfliers=False, widths=0.45)
-                            #ax.set_title(metric + '_'+ samp + '_Algo_' + algo + '_' + prob + '_' + str(obj) + '_' + str(n_vars))
-                            ax.set_title('Building time comparison')
-                            ax.set_xlabel('Approaches')
-                            #ax.set_ylabel(metric)
-                            ax.set_ylabel('Time(s)')
-                            ax.set_xticklabels(approaches, rotation=75, fontsize=10)
+time_plt = sns.boxplot(x="Instances", y="Time (s)",
+            hue="Approaches",
+            data=df_all)
+#time_plt = sns.despine(trim=True)
+time_plt.set_xticklabels(time_plt.get_xticklabels(),rotation=90)
+plt.tight_layout()
+plt.savefig('time_grouped.pdf')
+plt.clf()
 
 
-                            filename_fig = data_folder + '/test_runs/' + main_directory + '/Plots/' + metric + '_' + str(sample_size) + '_' + samp + '_' + algo + '_' + prob + '_' + str(
-                                obj) + '_' + str(n_vars)
-                            if is_plot is True:
-                                if save_fig == 'png':
-                                    fig.savefig(filename_fig + '.png', bbox_inches='tight')
-                                else:
-                                    fig.savefig(filename_fig + '.pdf', bbox_inches='tight')
-                                ax.clear()
-                            """
-                            bp = ax.boxplot(solution_ratio_all, showfliers=False)
-                            ax.set_title('SOLR_'+ samp + '_Algo_' + algo + '_' + prob + '_' + str(obj))
-                            ax.set_xlabel('Approaches')
-                            ax.set_ylabel('SOLR')
-                            ax.set_xticklabels(approaches, rotation=75, fontsize=8)
-                            filename_fig = main_directory + '/SOLR_'+ samp + '_' + algo + '_' + prob + '_' + str(obj) + '.png'
-                            fig.savefig(filename_fig, bbox_inches='tight')
-                            ax.clear()
-                            """""
-                            #bp = ax.boxplot(solution_ratio_all, showfliers=False)
-                            #filename_fig = main_directory + '/SolnRatio_' + samp + '_' + algo + '_' + prob + '_' + str(obj) + '.png'
-                            #fig.savefig(filename_fig, bbox_inches='tight')
-                            #ax.clear()
 
-
-#print(p_vals_all)
-
-if mod_p_val is False:
-    file_summary = data_folder + '/test_runs/' + main_directory + '/Summary_HV_' + problem_testbench + '.csv'
-else:
-    file_summary = data_folder + '/test_runs/' + main_directory + '/Summary_HV_ModP_' + problem_testbench + '.csv'
-with open(file_summary, 'w') as writeFile:
-    writer = csv.writer(writeFile)
-    writer.writerows(p_vals_all_hv)
-writeFile.close()
-
-if mod_p_val is False:
-    file_summary = data_folder + '/test_runs/'+ main_directory + '/Summary_RMSE_' + problem_testbench + '.csv'
-else:
-    file_summary = data_folder + '/test_runs/'+ main_directory + '/Summary_RMSE_ModP_' + problem_testbench + '.csv'
-with open(file_summary, 'w') as writeFile:
-    writer = csv.writer(writeFile)
-    writer.writerows(p_vals_all_rmse)
-writeFile.close()
-
-if mod_p_val is False:
-    file_summary = data_folder + '/test_runs/'+ main_directory + '/Summary_TIME_' + problem_testbench + '.csv'
-else:
-    file_summary = data_folder + '/test_runs/'+ main_directory + '/Summary_TIME_ModP_' + problem_testbench + '.csv'
-with open(file_summary, 'w') as writeFile:
-    writer = csv.writer(writeFile)
-    writer.writerows(p_vals_all_time)
-writeFile.close()
 
 
