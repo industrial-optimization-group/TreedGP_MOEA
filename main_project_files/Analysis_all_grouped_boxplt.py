@@ -27,6 +27,8 @@ from ranking_approaches import  calc_rank
 import seaborn as sns
 import pandas as pd
 
+################## Grouped boxplots #####################
+
 #rc('font',**{'family':'serif','serif':['Helvetica']})
 #rc('text', usetex=True)
 #plt.rcParams.update({'font.size': 15})
@@ -40,9 +42,9 @@ metric = 'HV'
 #metric = 'IGD'
 save_fig = 'pdf'
 #dims = [5,8,10] #,8,10]
-#dims = [2, 5, 7, 10]
-dims = [2,5]
-sample_sizes = [10000]
+dims = [2, 5, 7, 10]
+#dims = [10]
+sample_sizes = [2000]
 #sample_sizes = [2000, 10000]#, 50000]
 #sample_sizes = [10000, 50000]
 
@@ -60,20 +62,20 @@ init_folder = data_folder + '/initial_samples'
 #main_directory = 'Test_DR_CSC_Final_1'
 main_directory = 'Test_DR_CSC_ARDMatern4'
 
-#objectives = [3,5,7]
-objectives = [5]
+objectives = [3,5,7]
+#objectives = [5]
 #objectives = [2,3,5]
 #objectives = [3,5,6,8,10]
 
 
-#problem_testbench = 'DTLZ'
-problem_testbench = 'DDMOPP'
+problem_testbench = 'DTLZ'
+#problem_testbench = 'DDMOPP'
 
 #problems = ['DTLZ7']
 #problems = ['DTLZ2','DTLZ4']
 #problems = ['P1']
-#problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
-problems = ['P1','P2','P3','P4']
+problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
+#problems = ['P1','P2','P3','P4']
 #problems = ['P4']
 #problems = ['WELDED_BEAM'] #dims=4
 #problems = ['TRUSS2D'] #dims=3
@@ -111,9 +113,10 @@ emo_algorithm = ['RVEA']
 #approaches = ["generic_fullgp0","generic_fullgp","generic_sparsegp0","generic_sparsegp", "htgp0", "htgp1" , "htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp","htgp_1","htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp_50","generic_sparsegp","htgp_mse"]
-#approaches = ["generic_fullgp","generic_sparsegp","htgp"]
-approaches = ["generic_sparsegp","htgp"]
-approaches_nice = ['Sparse GP', 'Treed GP']
+approaches = ["generic_fullgp","generic_sparsegp","htgp"]
+#approaches = ["generic_sparsegp","htgp"]
+#approaches_nice = ['Sparse GP', 'Treed GP']
+approaches_nice = ['Full GP','Sparse GP', 'Treed GP']
 
 mode_length = int(np.size(approaches))
 #approaches = ['7', '9', '11']
@@ -344,14 +347,31 @@ for sample_size in sample_sizes:
                             #l.append('xyz')
                             #inst=l*11
                             df_temp = None
-                            instance = samp + '_' + str(sample_size) + '_' + 'DBMOPP'  + '_' + prob + '_' + str(obj) + '_' + str(n_vars)
+                            #instance = samp + '_' + str(sample_size) + '_' + 'DBMOPP'  + '_' + prob + '_' + str(obj) + '_' + str(n_vars)
+                            instance = str(sample_size) + '_' + 'DBMOPP'  + '_' + prob + '_' + str(obj)
                             for approach_name, approach_count in zip(approaches_nice,range(np.shape(approaches)[0])):
                                 for i in range(nruns):                                    
                                     if df_temp is None:
-                                        data_temp = {'Approaches':[approach_name], 'HV':[igd_all[i,approach_count]], 'RMSE': [rmse_mv_all[i,approach_count]], 'Time (s)':[time_taken_all[i,approach_count]], 'Instances': [instance] }
+                                        data_temp = {'Approaches':[approach_name], 
+                                                    'HV':[igd_all[i,approach_count]],
+                                                    'RMSE': [rmse_mv_all[i,approach_count]], 
+                                                    'Time (s)':[time_taken_all[i,approach_count]], 
+                                                    'Instances': [instance], 
+                                                    'Sampling':[samp], 
+                                                    'Objectives':[obj],
+                                                    'n':[n_vars],
+                                                    'Sample Size':[sample_size]}
                                         df_temp = pd.DataFrame(data_temp)
                                     else:
-                                        data_temp = {'Approaches':approach_name, 'HV':igd_all[i,approach_count], 'RMSE': rmse_mv_all[i,approach_count], 'Time (s)':time_taken_all[i,approach_count], 'Instances': instance}
+                                        data_temp = {'Approaches':approach_name, 
+                                                    'HV':igd_all[i,approach_count], 
+                                                    'RMSE': rmse_mv_all[i,approach_count], 
+                                                    'Time (s)':time_taken_all[i,approach_count], 
+                                                    'Instances': instance, 
+                                                    'Sampling':samp, 
+                                                    'Objectives':obj,
+                                                    'n':n_vars,
+                                                    'Sample Size':sample_size}
                                         df_temp = df_temp.append(data_temp, ignore_index=True)
                             
                         if df_all is None:
@@ -359,6 +379,31 @@ for sample_size in sample_sizes:
                         else:
                             df_all = df_all.append(df_temp, ignore_index=True)
 
+    sns.set(rc={'figure.figsize':(20,15)})
+    sns.set_theme(style="ticks", palette="pastel")
+    hv_plt = sns.catplot(x="Sampling", y="HV",
+                hue="Approaches",
+                data=df_all, row="n",col="Instances",kind="box",sharey=False)
+    plt.tight_layout()
+    plt.savefig('hv_grouped_'+problem_testbench+'_'+str(sample_size)+'.pdf')
+    plt.clf()
+
+    sns.set_theme(style="ticks", palette="pastel")
+    rmse_plt = sns.catplot(x="Sampling", y="RMSE",
+                hue="Approaches",
+                data=df_all, row="n",col="Instances",kind="box",sharey=False)
+    plt.tight_layout()
+    plt.savefig('rmse_grouped_'+problem_testbench+'_'+str(sample_size)+'.pdf')
+    plt.clf()
+
+    sns.set_theme(style="ticks", palette="pastel")
+    time_plt = sns.catplot(x="Sampling", y="Time (s)",
+                hue="Approaches",
+                data=df_all, row="n",col="Instances",kind="box",sharey=False)
+    plt.tight_layout()
+    plt.savefig('time_grouped_'+problem_testbench+'_'+str(sample_size)+'.pdf')
+    plt.clf()
+"""
 sns.set(rc={'figure.figsize':(20,15)})
 sns.set_theme(style="ticks", palette="pastel")
 hv_plt = sns.boxplot(x="Instances", y="HV",
@@ -388,7 +433,7 @@ time_plt.set_xticklabels(time_plt.get_xticklabels(),rotation=90)
 plt.tight_layout()
 plt.savefig('time_grouped.pdf')
 plt.clf()
-
+"""
 
 
 

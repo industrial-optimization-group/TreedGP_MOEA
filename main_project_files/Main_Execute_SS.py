@@ -38,11 +38,11 @@ from plot_surface import plt_surface_all as plt_surface_all
 
 max_samples = 219
 max_iters = 10
-init_folder = '/home/amrzr/Work/Codes/data/initial_samples/'
+init_folder = '/home/amrzr/Work/Codes/data/initial_samples_old/'
 plot_folder = '/home/amrzr/Work/Codes/data/plots_htgp/'
-plotting = False
+plotting_surface = False
 plotting_sols_anim = False
-plotting_sols = False
+plotting_sols = True
 
 def build_surrogates(problem_testbench, problem_name, nobjs, nvars, nsamples, sampling, is_data, x_data, y_data, surrogate_type, Z=None, z_samples=None):
     x_names = [f'x{i}' for i in range(1,nvars+1)]
@@ -128,7 +128,7 @@ def run_optimizer(problem_testbench, problem_name, nobjs, nvars, sampling, nsamp
         print("Building models!")
         surrogate_problem, time_taken = build_surrogates(problem_testbench,problem_name, nobjs, nvars, nsamples, sampling, is_data, x, y, surrogate_type,z_samples={'z_samples':10*nvars})
         print("Time takes:",time_taken)
-        if plotting is True:
+        if plotting_surface is True:
             filename = plot_folder + surrogate_type + '_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
 
             plt_surface_all(surrogate_problem,
@@ -406,8 +406,18 @@ def run_optimizer_rf(problem_testbench, problem_name, nobjs, nvars, sampling, ns
 
 def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, nsamples, is_data, surrogate_type, run):
     time_taken_all = 0
-    #range_axis = [-0.05,1.8]
-    range_axis = [0.0,0.7]
+    plt.rcParams.update({'font.size': 18})
+    range_axis = [-0.05,1.8]
+    #range_axis = [0.0,0.7]
+    #x_p = np.arange(0,0.2,0.01)
+    #y_p = 0.2-x_p
+    theta = np.linspace(0, 2*np.pi, 100)
+
+    radius = 1
+
+    x_p = radius*np.cos(theta)
+    y_p = radius*np.sin(theta)
+
     n_iterations_building = nsamples/(10*nvars)
     filename_scatterplot = plot_folder + 'Scatter_solutions_' + problem_testbench + '_' + problem_name +'_'+str(nobjs) + '_' + str(nvars) + '_' + str(run) + '_'+ sampling +'_'+ str(nsamples) + '_' + str(run)
     #n_iterations_building = 10
@@ -438,6 +448,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
             fig = plt.figure(figsize=(5, 5))
             ax = fig.add_subplot(111)
             ax.scatter(y1, y2)
+            ax.scatter(x=x_p, y=y_p, marker='*')
             ax.set_xlim(range_axis)
             ax.set_ylim(range_axis)
             plt.title(r'$I= {cnt}$'.format(cnt=str(count)))
@@ -527,7 +538,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
     print("Total points per model sequence:", total_points_per_model_sequence)
     
     
-    if plotting is True:
+    if plotting_surface is True:
         filename = plot_folder + 'htgp_surface_' + problem_testbench + '_' + problem_name + '_' + str(nobjs) + '_' + str(nvars) + '_' + str(run) + '_' + str(nsamples) + '_' + sampling + '_' + str(run)
         plt_surface_all(surrogate_problem,
                     filename,

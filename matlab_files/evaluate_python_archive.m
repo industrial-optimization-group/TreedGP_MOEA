@@ -1,4 +1,4 @@
-function obj_vals = evaluate_python(population, init_folder, approaches, Strategy, Problem, M, nvars, sample_size, run, is_plot, plot_init)
+function obj_vals = evaluate_python_archive(population, population_archive, init_folder, approaches, Strategy, Problem, M, nvars, sample_size, run, is_plot, plot_init)
     load(fullfile(init_folder,['DDMOPP_Params_' Strategy '_' Problem '_' num2str(M) '_' num2str(nvars) '_' num2str(sample_size) '.mat']));
     load(fullfile(init_folder,['Initial_Population_DDMOPP_' Strategy '_AM_' num2str(nvars) '_' num2str(sample_size) '.mat']));
     M=double(M);
@@ -14,6 +14,7 @@ function obj_vals = evaluate_python(population, init_folder, approaches, Strateg
  
     if plot_init == 0
         X = population;
+        X_archive = population_archive;
     else
         X = Initial_Population_DDMOPP(Run+1).c;
     end
@@ -27,6 +28,13 @@ function obj_vals = evaluate_python(population, init_folder, approaches, Strateg
             end
             X= X_project;
         end
+        if nvars > 2
+            X_project = zeros(size(X_archive,1),2);
+            for i=1:size(X_archive,1)
+                X_project(i,:) = project_nD_point_to_2D(X_archive(i,:),problem_parameters.projection_vectors(1,:),problem_parameters.projection_vectors(2,:));
+            end
+            X_archive= X_project;
+        end
         %figure;
         plot_dbmopp_2D_regions(problem_parameters,0,M,0, ...
             0);
@@ -38,11 +46,11 @@ function obj_vals = evaluate_python(population, init_folder, approaches, Strateg
         xlabel('');
         ylabel('');
         set(gcf, 'PaperSize', [5 5])
-        saveas(gcf,fullfile('/home/amrzr/Work/Codes/data/test_runs/Test_DR_CSC_ARDMatern4/Plots_solutions',['Instance_' approaches '_' Strategy '_' Problem '_' num2str(M) '_' num2str(nvars) '_' num2str(sample_size) '_' num2str(run) '.pdf']))
+        saveas(gcf,fullfile('/home/amrzr/Work/Codes/data/test_runs/Test_DR_CSC_ARDMatern4/Plots_solutions',['Instance_' Strategy '_' Problem '_' num2str(M) '_' num2str(nvars) '_' num2str(sample_size) '.pdf']))
         sz=25;
         figure;
-        c = linspace(1,10,length(X));
-        scatter(X(:,1),X(:,2),sz,c,'filled');
+        c = linspace(1,10,length(X_archive));
+        scatter(X_archive(:,1),X_archive(:,2),sz,c,'filled');
         hold on;
         %scatter(X(:,1),X(:,2));
         non = P_sort(obj_vals,'first')==1;

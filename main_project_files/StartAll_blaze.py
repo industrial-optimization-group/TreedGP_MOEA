@@ -1,7 +1,8 @@
-#import sys
+import sys
 #sys.path.insert(1, '/scratch/project_2003769/HTGP_MOEA_CSC')
-#sys.path.insert(1, '/home/amrzr/Work/Codes/AmzNew/')
+sys.path.insert(1, '/home/amrzr/Work/Codes/TreedGP_MOEA/')
 #import Main_Execute_Prob as mexeprob
+from main_project_files.evaluate_population import evaluate_run_archive
 import Main_Execute_SS as mexe
 #import Main_Execute_interactive as mexe_int
 import pickle
@@ -18,6 +19,9 @@ init_folder = data_folder + '/initial_samples'
 
 #evaluate_data = False
 evaluate_data = True
+
+evaluate_data_archive = True
+
 is_plot = True
 #is_plot = False
 file_exists_check = False
@@ -62,13 +66,13 @@ main_directory = 'Test_DR_CSC_ARDMatern4'
 
 #dims = [5,8,10] #,8]
 #dims = [2, 5, 7, 10]
-dims = [2]
-#dims = [10]
+#dims = [2]
+dims = [10]
 
 sample_sizes = [2000]
 #sample_sizes = [10000, 50000]
 
-objectives = [7]
+objectives = [5]
 #objectives = [3,5,7]
 #objectives = [3, 5, 7]
 #objectives = [3,5,7]
@@ -114,10 +118,10 @@ approaches = ["generic_fullgp","generic_sparsegp","htgp"]
 
 
 #sampling = ['BETA', 'MVNORM']
-#sampling = ['LHS']
+sampling = ['LHS']
 #sampling = ['BETA','OPTRAND','MVNORM']
 #sampling = ['OPTRAND']
-sampling = ['MVNORM']
+#sampling = ['MVNORM']
 #sampling = ['LHS', 'MVNORM']
 
 #emo_algorithm = ['RVEA','IBEA']
@@ -185,17 +189,28 @@ def parallel_execute(run, approach, algo, prob, n_vars, obj, samp, sample_size):
                 print(path_to_file,"-does not exist!")
             else:
                 if path.exists(path_to_file+'_evaluated') is False or file_exists_check is False:  
-             
-                    evaluate_run(init_folder,
-                                path_to_file,
-                                problem_testbench, 
-                                prob, 
-                                obj, 
-                                n_vars, 
-                                samp, 
-                                sample_size, 
-                                approach,
-                                run)
+                    if evaluate_data_archive is True:
+                        evaluate_run_archive(init_folder,
+                                            path_to_file,
+                                            problem_testbench, 
+                                            prob, 
+                                            obj, 
+                                            n_vars, 
+                                            samp, 
+                                            sample_size, 
+                                            approach,
+                                            run)
+                    else:
+                        evaluate_run(init_folder,
+                                    path_to_file,
+                                    problem_testbench, 
+                                    prob, 
+                                    obj, 
+                                    n_vars, 
+                                    samp, 
+                                    sample_size, 
+                                    approach,
+                                    run)                        
                 #else:
                 #    print(path_to_file,"-already evaluated")
 

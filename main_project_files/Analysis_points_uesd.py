@@ -159,7 +159,7 @@ for sample_size in sample_sizes:
                                 color_map = plt.cm.get_cmap('viridis')
                                 #color_map = color_map(np.linspace(0, 1, obj+1))
                                 ax = sns.lineplot(x="Iteration", y="Number of points",
-                                                hue="Objective", style="Objective",
+                                                hue="Objective", style="Objective", err_style="bars",
                                                 markers=True, dashes=False, data=points_sequence_dfpd, palette=color_map)
                                 fig = ax.get_figure()
                                 fig.show()

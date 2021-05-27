@@ -25,6 +25,9 @@ from matplotlib import rc
 from desdeo_problem.testproblems.TestProblems import test_problem_builder
 from ranking_approaches import  calc_rank
 
+
+################## Summary of all and seperate boxplots ###############
+
 #rc('font',**{'family':'serif','serif':['Helvetica']})
 #rc('text', usetex=True)
 #plt.rcParams.update({'font.size': 15})
