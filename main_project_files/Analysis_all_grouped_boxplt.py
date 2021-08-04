@@ -44,7 +44,7 @@ save_fig = 'pdf'
 #dims = [5,8,10] #,8,10]
 dims = [2, 5, 7, 10]
 #dims = [10]
-sample_sizes = [2000]
+sample_sizes = [10000]
 #sample_sizes = [2000, 10000]#, 50000]
 #sample_sizes = [10000, 50000]
 
@@ -60,7 +60,8 @@ init_folder = data_folder + '/initial_samples'
 #main_directory = 'Test_Gpy3'
 #main_directory = 'Test_DR_4'
 #main_directory = 'Test_DR_CSC_Final_1'
-main_directory = 'Test_DR_CSC_ARDMatern4'
+#main_directory = 'Test_DR_CSC_ARDMatern4'
+main_directory = 'Test_DR_CSC_Finalx'
 
 objectives = [3,5,7]
 #objectives = [5]
@@ -113,10 +114,10 @@ emo_algorithm = ['RVEA']
 #approaches = ["generic_fullgp0","generic_fullgp","generic_sparsegp0","generic_sparsegp", "htgp0", "htgp1" , "htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp","htgp_1","htgp"]
 #approaches = ["generic_fullgp","generic_sparsegp_50","generic_sparsegp","htgp_mse"]
-approaches = ["generic_fullgp","generic_sparsegp","htgp"]
-#approaches = ["generic_sparsegp","htgp"]
-#approaches_nice = ['Sparse GP', 'Treed GP']
-approaches_nice = ['Full GP','Sparse GP', 'Treed GP']
+#approaches = ["generic_fullgp","generic_sparsegp","htgp"]
+approaches = ["generic_sparsegp","htgp"]
+approaches_nice = ['Sparse GP', 'Treed GP']
+#approaches_nice = ['Full GP','Sparse GP', 'TGP-MO']
 
 mode_length = int(np.size(approaches))
 #approaches = ['7', '9', '11']
@@ -135,8 +136,8 @@ hv_ref = {"DTLZ2": {"2": [3, 3], "3": [6, 6, 6], "5": [6, 6, 6, 6, 6],  "7": [6,
           "DTLZ7": {"2": [1, 20], "3": [1, 1, 40], "5": [1, 1, 1, 1, 50] ,  "7": [1, 1, 1, 1, 1, 1, 70]}}
 
 
-nruns = 11
-pool_size = 1
+nruns = 31
+pool_size = 4
 
 plot_boxplot = True
 

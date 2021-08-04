@@ -6,7 +6,7 @@ from desdeo_problem.testproblems.TestProblems import test_problem_builder
 eng = matlab.engine.start_matlab()
 s = eng.genpath('./matlab_files')
 eng.addpath(s, nargout=0)
-is_plot = 1
+is_plot = 0
 plot_init = 0
 
 data_folder = '/home/amrzr/Work/Codes/data'
@@ -80,7 +80,7 @@ def evaluate_run(init_folder,
                 approaches,
                 run):
     #path_to_file = path_to_file + '/Run_' + str(run)
-    run = run.tolist()
+    #run = run.tolist()
     data = pickle.load(open(path_to_file, "rb"))
     population = data['individuals_solutions']
     data_evaluted = {}

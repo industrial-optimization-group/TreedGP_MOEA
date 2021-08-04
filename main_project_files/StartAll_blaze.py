@@ -20,10 +20,11 @@ init_folder = data_folder + '/initial_samples'
 #evaluate_data = False
 evaluate_data = True
 
-evaluate_data_archive = True
+evaluate_data_archive = False
+#evaluate_data_archive = True
 
-is_plot = True
-#is_plot = False
+#is_plot = True
+is_plot = False
 file_exists_check = False
 #file_exists_check = True
 
@@ -59,21 +60,24 @@ objs(10) = PFPF;
 #main_directory = 'Test_Gpy3'
 #main_directory = 'Test_DR_4'  #DR = Datatset Reduction
 #main_directory = 'Test_DR_Scratch'
-main_directory = 'Test_DR_CSC_ARDMatern4'
+#main_directory = 'Test_DR_CSC_ARDMatern4'
+#main_directory = 'Test_DR_CSC_Finalx'
+main_directory = 'Test_DR_CSC_Finalx_err'
 #main_directory = 'Test_DR_CSC_1'
 #main_directory = 'Test_RF'
 #main_directory = 'Test_DR_CSC_Final_1'
 
 #dims = [5,8,10] #,8]
-#dims = [2, 5, 7, 10]
-#dims = [2]
-dims = [10]
+dims = [2, 5, 7, 10]
+#dims = [7]
+#dims = [10]
 
-sample_sizes = [2000]
+sample_sizes = [10000]
+#sample_sizes = [2000,10000, 50000]
 #sample_sizes = [10000, 50000]
 
-objectives = [5]
-#objectives = [3,5,7]
+#objectives = [3]
+objectives = [3,5,7]
 #objectives = [3, 5, 7]
 #objectives = [3,5,7]
 #objectives = [2,3,5]
@@ -88,8 +92,8 @@ problem_testbench = 'DDMOPP'
 #problems = ['DTLZ2']
 #problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
 
-problems = ['P1']
-#problems = ['P1','P2','P3','P4']
+#problems = ['P3']
+problems = ['P1','P2','P3','P4']
 #problems = ['P1','P3','P4']
 
 
@@ -111,9 +115,10 @@ problems = ['P1']
 #approaches = ["htgp"]
 #approaches = ["generic_sparsegp"]
 #approaches = ["generic_fullgp","htgp"]
-approaches = ["generic_fullgp","generic_sparsegp","htgp"]
-#approaches = ["generic_sparsegp","htgp"]
+#approaches = ["generic_fullgp","generic_sparsegp","htgp"]
+approaches = ["generic_sparsegp","htgp"]
 #approaches = ["htgp"]
+#approaches = ["generic_fullgp"]
 #approaches = ["generic_fullgp","generic_sparsegp"]
 
 
@@ -135,7 +140,7 @@ interactive = False
 #############################################
 
 
-nruns = 1
+nruns = 31
 parallel_jobs = 1
 log_time = str(datetime.datetime.now())
 

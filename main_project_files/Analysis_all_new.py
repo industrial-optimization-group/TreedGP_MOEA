@@ -41,10 +41,10 @@ metric = 'HV'
 #metric = 'IGD'
 save_fig = 'pdf'
 #dims = [5,8,10] #,8,10]
-#dims = [2, 5, 7, 10]
-dims = [2]
+dims = [2, 5, 7, 10]
+#dims = [2]
 sample_sizes = [10000]
-#sample_sizes = [2000, 10000]#, 50000]
+#sample_sizes = [2000, 10000, 50000]
 #sample_sizes = [10000, 50000]
 
 data_folder = '/home/amrzr/Work/Codes/data'
@@ -59,10 +59,11 @@ init_folder = data_folder + '/initial_samples'
 #main_directory = 'Test_Gpy3'
 #main_directory = 'Test_DR_4'
 #main_directory = 'Test_DR_CSC_Final_1'
-main_directory = 'Test_DR_CSC_ARDMatern4'
+#main_directory = 'Test_DR_CSC_ARDMatern4'
+main_directory = 'Test_DR_CSC_Finalx_err'
 
-#objectives = [3,5,7]
-objectives = [5]
+objectives = [3,5,7]
+#objectives = [5]
 #objectives = [2,3,5]
 #objectives = [3,5,6,8,10]
 
@@ -72,9 +73,9 @@ problem_testbench = 'DDMOPP'
 
 #problems = ['DTLZ7']
 #problems = ['DTLZ2','DTLZ4']
-problems = ['P1']
+#problems = ['P1']
 #problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
-#problems = ['P1','P2','P3','P4']
+problems = ['P1','P2','P3','P4']
 #problems = ['P4']
 #problems = ['WELDED_BEAM'] #dims=4
 #problems = ['TRUSS2D'] #dims=3
@@ -132,7 +133,7 @@ hv_ref = {"DTLZ2": {"2": [3, 3], "3": [6, 6, 6], "5": [6, 6, 6, 6, 6],  "7": [6,
           "DTLZ7": {"2": [1, 20], "3": [1, 1, 40], "5": [1, 1, 1, 1, 50] ,  "7": [1, 1, 1, 1, 1, 1, 70]}}
 
 
-nruns = 11
+nruns = 31
 pool_size = 4
 
 plot_boxplot = True
