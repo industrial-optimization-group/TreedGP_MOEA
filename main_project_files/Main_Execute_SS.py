@@ -42,7 +42,7 @@ init_folder = '/home/amrzr/Work/Codes/data/initial_samples_old/'
 plot_folder = '/home/amrzr/Work/Codes/data/plots_htgp/'
 plotting_surface = False
 plotting_sols_anim = False
-plotting_sols = True
+plotting_sols = False
 
 def build_surrogates(problem_testbench, problem_name, nobjs, nvars, nsamples, sampling, is_data, x_data, y_data, surrogate_type, Z=None, z_samples=None):
     x_names = [f'x{i}' for i in range(1,nvars+1)]
@@ -485,29 +485,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
                 figobj = plt_anim.animate_next_(evolver_opt_tree.population.objectives, figobj, filename_scatterplot, count)
         count=count+1
 
-        #y1_tree, y1_gp, X1_tree, X1_gp =surrogate_problem.objectives[0]._model.predict_seperate(X_solutions)
-        #y2_tree, y2_gp, X2_tree, X2_gp =surrogate_problem.objectives[1]._model.predict_seperate(X_solutions)
-        
-        """
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        ax.scatter(y1_tree, y2_tree, marker='o',color='blue')
-        ax.scatter(y1_gp, y2_gp, marker='*',color='green')
-        plt.title(r'$I=$',count)
-        plt.xlabel(r'$f_1(x)$')
-        plt.ylabel(r'$f_1(x)$')
-        plt.savefig(plot_folder+"scatter_solns_new"+str(count)+"_"+str(run)+".pdf")
-        ax.cla()
-        fig.clf()
-        plt.close()
-        """
-
-        
-       
         evolver_opt_tree._refresh_population()
-    
-    #figobj = plt_anim.animate_next_(evolver_opt_tree.population.objectives, figobj, filename_scatterplot, count+1)
-    #for i in range(nobjs):
 
     print("Size solutions:",np.shape(population_opt_tree.objectives))
 
@@ -562,11 +540,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
     
     population = optimize_surrogates(surrogate_problem)
 
-    ##### Previous HTGP
-    #surrogate_problem, time_taken = build_surrogates(problem_testbench,problem_name, nobjs, nvars, nsamples, is_data, x, y, "htgp")
-    #print(time_taken)
-    #population = optimize_surrogates(surrogate_problem)
-    #population = optimize_surrogates(surrogate_problem)
+
     results_dict = {
             'individual_archive': population.individuals_archive,
             'objectives_archive': population.objectives_archive,
@@ -579,5 +553,3 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
             'total_points_per_model_sequence': total_points_per_model_sequence
         }
     return results_dict
-    
-    #return 0
