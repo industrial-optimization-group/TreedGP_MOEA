@@ -31,7 +31,7 @@ The dataset used for the tests consisting of 2000, 10000 and 50000 samples are p
 * The DBMOPP problems are implemented in Matlab and are available in `matlab_files` folder. 
 ### Running the experiments
 * For replicating the experiments in the paper run the `main_project_files/StartAll_HPC.py`
-* The test results will be saved as pickle files in the `data_folder` provided. Change the folder locations and datset for different problem instances.
+* The test results will be saved as pickle files in the `data_folder/main_directory` provided. Change the folder locations and datset for different problem instances.
 * Change the parameters `sample_sizes`, `sampling` (sampling strategy), `objectives` (number of objectives), `dims` (number of decision variables), `problem_testbench`, `problems`. For running optimization using full GP, sparse GP or TGP-MO surrogates, set `approaches = ["generic_fullgp","generic_sparsegp","htgp"]` respectively. Kindly note that TGP-MO is referred as `htgp` in the codes.
 * Change the `nruns` parameter for the number of runs for each instance you desire to run. If you want to run parallel processes set `parallel_jobs` for the pool size.
 
@@ -39,7 +39,7 @@ The dataset used for the tests consisting of 2000, 10000 and 50000 samples are p
 ### Evaluting the solutions with underlying objectives
 * Set `evaluate_data=True` in the `main_project_files/StartAll_HPC.py` file. The DBMOPP problems are evaluted using a matlab bridge.
 * Provide the data location and other parameter settings are same as described above.
-* The evaluted data are stored in the `data_folder` in `.csv` format.
+* The evaluted data are stored in the `data_folder/main_directory` in the respective sub-folders as `.csv` files.
 
 ### Analyzing the Results
 * Run the `main_project_files/Analysis_HV_RMSE_T.py` file with respective data location and other parameter settings are same as described above. You will be provided with tables in `.csv` format comparing different approaches. The tables consisit of the pairwise p-values, scores and other details about the approaches being compared.
