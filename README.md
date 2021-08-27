@@ -21,7 +21,7 @@ TGP-MO are tailored surrogate models for solving offline data-driven multiobject
 * Add packages: `poetry add  numpy pandas matplotlib plotly sklearn scipy pygmo optproblems tqdm diversipy pyDOE joblib jupyter statsmodels GPy graphviz paramz plotly_express pymoo seaborn`
 
 ### Example
-An example notebook can be found in the example folder solving an offline bi-objective DTLZ2 problem, 10 decision variables with 2000 samples (LHS).
+An example notebook can be found in the example folder solving an offline bi-objective DTLZ2 problem, 10 decision variables with 2000 samples (LHS). If you want to use the solve a problem with our framework run `framework/Solve_problem.py` file. The settings of the file are similar to as described in the next section.
 
 ## Replicating the Experiments
 

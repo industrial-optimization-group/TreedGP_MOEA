@@ -47,8 +47,8 @@ problem_testbench = 'DDMOPP'
 #problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
 problems = ['P1','P2','P3','P4']
 
-#approaches = ["generic_fullgp","generic_sparsegp","htgp"]
-approaches = ["htgp"]
+approaches = ["generic_fullgp","generic_sparsegp","htgp"]
+#approaches = ["generic_sparsegp","htgp"]
 emo_algorithm = ['RVEA']
 
 log_time = str(datetime.datetime.now())
