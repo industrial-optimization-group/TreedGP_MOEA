@@ -62,7 +62,7 @@ class treeGP(BaseRegressor):
             self.total_point += np.shape(X_leaf)[0]
             kernel = GPy.kern.Matern52(np.shape(X_leaf)[1],ARD=True)
             m = GPy.models.GPRegression(X_leaf,Y_leaf.reshape(-1, 1),kernel=kernel)
-            m.optimize('bfgs')
+            m.optimize('bfgs')  
             self.dict_gps[str(unique_solutions[arg_max_mse])] = m
 
     def predict(self, X):

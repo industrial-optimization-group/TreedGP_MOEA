@@ -9,8 +9,9 @@ from non_domx import ndx
 
 rc('font',**{'family':'serif','serif':['Helvetica']})
 rc('text', usetex=True)
-
-
+plt.rcParams.update({'font.size': 15})
+font_size=17
+color_code = 'blue'
 
 def plt_surface3d(surrogate_problem, 
                     filename,
@@ -151,7 +152,7 @@ def plt_surface2d(surrogate_problem, filename):
     y3 = y3.reshape(np.shape(x1))
     # Plot the surface.
     #fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-    plt.contour(x1,x2,y1,colors='red')
+    plt.contour(x1,x2,y1,colors=color_code)
     plt.contour(x1,x2,y2,colors='blue')
     plt.contour(x1,x2,y3,colors='green')  
     plt.savefig(filename + '_contour.pdf', bbox_inches='tight')
@@ -214,12 +215,13 @@ def plt_surface_all(surrogate_problem,
     v_max = 0.2
     lev = 25
     cmap_reversed = cm.get_cmap('inferno_r')
-    #plt.contour(x1,x2,y1,30,linewidths=0.5,colors='red')
+    #cmap_reversed = cm.get_cmap('viridis_r')
+    #plt.contour(x1,x2,y1,30,linewidths=0.5,colors=color_code)
     #plt.contour(x1,x2,y2,30,linewidths=0.5,colors='blue')
-    fig = plt.figure(figsize=(5,4))
+    fig = plt.figure(figsize=(7,5.5))
     ax = fig.add_subplot(111)
-    ax.set_xlabel(r'$x_1$', fontsize=17)
-    ax.set_ylabel(r'$x_2$', fontsize=17)
+    ax.set_xlabel(r'$x_1$', fontsize=font_size)
+    ax.set_ylabel(r'$x_2$', fontsize=font_size)
     CS = ax.contour(x1,x2,y1,30,linewidths=0.7,colors='black')
     CS = ax.contour(x1,x2,y2,30,linewidths=0.7,colors='black',linestyles='dashed')
     #ax.set_xlabel('x_1')
@@ -233,7 +235,8 @@ def plt_surface_all(surrogate_problem,
     m.set_array(rmse_mv_sols)
     m.set_clim(0., v_max)
     plt.colorbar(m, boundaries=np.linspace(0, v_max, lev+1))
-    plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',color='blue')
+    plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',color=color_code)
+    plt.rcParams["font.size"] = "15"
     plt.savefig(filename + '_contour.pdf', bbox_inches='tight')
     plt.cla()   # Clear axis
     plt.clf()   # Clear figure
@@ -241,10 +244,10 @@ def plt_surface_all(surrogate_problem,
 
     print("Max RMSE:",np.max(rmse_mv_nds))
     # Plot the non dominated solutions
-    fig = plt.figure(figsize=(5,4))
+    fig = plt.figure(figsize=(7,5.5))
     ax = fig.add_subplot(111)
-    ax.set_xlabel(r'$x_1$', fontsize=17)
-    ax.set_ylabel(r'$x_2$', fontsize=17)
+    ax.set_xlabel(r'$x_1$', fontsize=font_size)
+    ax.set_ylabel(r'$x_2$', fontsize=font_size)
     CS = ax.contour(x1,x2,y1,30,linewidths=0.7,colors='black')
     CS = ax.contour(x1,x2,y2,30,linewidths=0.7,colors='black',linestyles='dashed')
     ax.set_xlim(right=-0.4, left=-1)
@@ -255,8 +258,8 @@ def plt_surface_all(surrogate_problem,
     m.set_clim(0., v_max)
     plt.colorbar(m, boundaries=np.linspace(0, v_max, lev+1))
     #sc = plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',c=rmse_mv_nds, cmap='winter', vmin = 0, vmax = 0.1)
-    #sc = plt.scatter(x_underlying_nds[:,0], x_underlying_nds[:,1], marker='*',s=rmse_mv_nds*500, color='blue')
-    plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',color='blue')
+    #sc = plt.scatter(x_underlying_nds[:,0], x_underlying_nds[:,1], marker='*',s=rmse_mv_nds*500, color=color_code)
+    plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',color=color_code)
     #plt.colorbar(sc)
     plt.savefig(filename + '_contour_zoomed.pdf', bbox_inches='tight')
     plt.cla()   # Clear axis
@@ -265,12 +268,12 @@ def plt_surface_all(surrogate_problem,
 
 
 
-    #plt.contour(x1,x2,y_underlying1,30,linewidths=0.5,colors='red')
-    #plt.contour(x1,x2,y_underlying2,30,linewidths=0.5,colors='blue')
-    fig = plt.figure(figsize=(5,4))
+    #plt.contour(x1,x2,y_underlying1,30,linewidths=0.5,colors=color_code)
+    #plt.contour(x1,x2,y_underlying2,30,linewidths=0.5,colors=color_code)
+    fig = plt.figure(figsize=(7,5.5))
     ax = fig.add_subplot(111)
-    ax.set_xlabel(r'$x_1$', fontsize=17)
-    ax.set_ylabel(r'$x_2$', fontsize=17)
+    ax.set_xlabel(r'$x_1$', fontsize=font_size)
+    ax.set_ylabel(r'$x_2$', fontsize=font_size)
     CS = ax.contour(x1,x2,y_underlying1,30,linewidths=0.7,colors='black')
     CS = ax.contour(x1,x2,y_underlying2,30,linewidths=0.7,colors='black',linestyles='dashed')
     #CS = plt.contourf(x1, x2, np.zeros(np.shape(y)[0]).reshape(np.shape(x1)),  levels= lev, cmap=cmap_reversed, vmin = 0, vmax = v_max)
@@ -278,7 +281,7 @@ def plt_surface_all(surrogate_problem,
     m.set_array(np.zeros(np.shape(y)[0]).reshape(np.shape(x1)))
     m.set_clim(0., v_max)
     plt.colorbar(m, boundaries=np.linspace(0, v_max, lev+1))
-    plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',color='blue')
+    plt.scatter(x_underlying_nds[:,1], x_underlying_nds[:,0], marker='*',color=color_code)
     plt.savefig(filename + '_contour_underlying.pdf', bbox_inches='tight')
     plt.cla()   # Clear axis
     plt.clf()   # Clear figure

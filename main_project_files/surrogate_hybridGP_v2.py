@@ -128,6 +128,7 @@ class HybridTreeGP_v2(BaseRegressor):
             loc_leaf = np.where(self.samples_leaf_nodes==unique_solutions[arg_max_mse])[0]
             X_leaf = self.X[loc_leaf]
             Y_leaf = self.y[loc_leaf]
+            print("X of the leaf node:",X_solutions[np.where(Y_solution_leaf==self.error_leaves[-1])])
             print("Leaf node index : ", self.error_leaves)
             print("Number of data points : ",np.shape(X_leaf)[0])
             self.total_point += np.shape(X_leaf)[0]

@@ -1,3 +1,4 @@
+#from logging import _Level
 import sys
 #sys.path.insert(1, '/scratch/project_2003769/HTGP_MOEA_CSC')
 sys.path.insert(1, '/home/amrzr/Work/Codes/TreedGP_MOEA/')
@@ -11,6 +12,7 @@ from desdeo_problem.Problem import DataProblem
 from desdeo_problem.surrogatemodels.SurrogateModels import GaussianProcessRegressor
 from desdeo_problem.testproblems.TestProblems import test_problem_builder
 
+from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.gaussian_process.kernels import Matern
 from pyDOE import lhs
 import plotly.graph_objects as go
@@ -35,14 +37,20 @@ import desdeo_emo.othertools.plotlyanimate as plt_anim
 
 from plot_surface import plt_surface3d as plt_surface
 from plot_surface import plt_surface_all as plt_surface_all
+from matplotlib import cm
+from plot_partitions import plot_partition
 
 max_samples = 219
 max_iters = 10
 init_folder = '/home/amrzr/Work/Codes/data/initial_samples_old/'
-plot_folder = '/home/amrzr/Work/Codes/data/plots_htgp/'
+#plot_folder = '/home/amrzr/Work/Codes/data/plots_htgp2/'
+plot_folder = '/home/amrzr/Work/Codes/data/plots_htgp3/'
 plotting_surface = False
 plotting_sols_anim = False
-plotting_sols = False
+plotting_sols = True
+plt_surface_per_iter = False
+plot_decision_space_solutions = True
+do_non_dom_sort = True
 
 def build_surrogates(problem_testbench, problem_name, nobjs, nvars, nsamples, sampling, is_data, x_data, y_data, surrogate_type, Z=None, z_samples=None):
     x_names = [f'x{i}' for i in range(1,nvars+1)]
@@ -407,16 +415,17 @@ def run_optimizer_rf(problem_testbench, problem_name, nobjs, nvars, sampling, ns
 def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, nsamples, is_data, surrogate_type, run):
     time_taken_all = 0
     plt.rcParams.update({'font.size': 18})
-    range_axis = [-0.05,1.8]
-    #range_axis = [0.0,0.7]
-    #x_p = np.arange(0,0.2,0.01)
-    #y_p = 0.2-x_p
-    theta = np.linspace(0, 2*np.pi, 100)
-
-    radius = 1
-
-    x_p = radius*np.cos(theta)
-    y_p = radius*np.sin(theta)
+    
+    if problem_testbench is 'DDMOPP':
+        x_p = np.arange(0,0.2,0.01)
+        y_p = 0.2-x_p
+        range_axis = [0.0,0.7]
+    else:
+        theta = np.linspace(0, 2*np.pi, 100)
+        radius = 1
+        x_p = radius*np.cos(theta)
+        y_p = radius*np.sin(theta)
+        range_axis = [-0.05,1.8]
 
     n_iterations_building = nsamples/(10*nvars)
     filename_scatterplot = plot_folder + 'Scatter_solutions_' + problem_testbench + '_' + problem_name +'_'+str(nobjs) + '_' + str(nvars) + '_' + str(run) + '_'+ sampling +'_'+ str(nsamples) + '_' + str(run)
@@ -431,20 +440,32 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
     total_points_all = 0
     total_points_all_sequence = []
     total_points_per_model = np.zeros(nobjs)
+    total_points_per_model_prev = np.zeros(nobjs)
     total_points_per_model_sequence = None
     delta_total_point = 1
     #evolver_opt_tree = RVEA(surrogate_problem, use_surrogates=True, n_iterations=500, n_gen_per_iter=20)
     evolver_opt_tree = RVEA(surrogate_problem, use_surrogates=True, n_iterations=n_iterations_building, n_gen_per_iter=50)
     count=0
-
-
+    filename = plot_folder + 'htgp_surface_'
+    
+    """
+    plt_surface_all(surrogate_problem,
+    filename+str(count),
+    init_folder,
+    problem_testbench, 
+    problem_name, 
+    nobjs, 
+    nvars, 
+    sampling, 
+    nsamples)
+    """
     while evolver_opt_tree.continue_evolution() and delta_total_point > 0:
         evolver_opt_tree.iterate()    
         population_opt_tree = evolver_opt_tree.population
         X_solutions = population_opt_tree.individuals
         if plotting_sols is True:
-            y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
-            y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
+            y1,s1=surrogate_problem.objectives[0]._model.predict(X_solutions)
+            y2,s2=surrogate_problem.objectives[1]._model.predict(X_solutions)
             fig = plt.figure(figsize=(5, 5))
             ax = fig.add_subplot(111)
             ax.scatter(y1, y2)
@@ -460,9 +481,16 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
             fig.clf()
             plt.close()
 
+        if do_non_dom_sort:
+            non_dom_front = ndx(population_opt_tree.objectives)
+            X_sols_nds = X_solutions[non_dom_front[0][0]]
+        
         for i in range(nobjs):
             print("Objective :", i+1)
-            surrogate_problem.objectives[i]._model.addGPs(X_solutions)
+            if do_non_dom_sort:
+                surrogate_problem.objectives[i]._model.addGPs(X_sols_nds)
+            else:    
+                surrogate_problem.objectives[i]._model.addGPs(X_solutions)
             total_points_all += surrogate_problem.objectives[i]._model.total_point_gps
             total_points_per_model[i] = surrogate_problem.objectives[i]._model.total_point
         total_points_all_sequence = np.append(total_points_all_sequence,total_points_all)
@@ -476,7 +504,16 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         print("Delta:",delta_total_point)
         print("Iteration:",evolver_opt_tree._iteration_counter)
         print("points per model:",total_points_per_model)
-        
+        total_points_per_model_diff = total_points_per_model - total_points_per_model_prev
+        total_points_per_model_prev =total_points_per_model.copy()
+
+        if plot_decision_space_solutions:
+            plot_partition(surrogate_problem,
+                            X_solutions,
+                            evolver_opt_tree._iteration_counter,
+                            total_points_per_model_diff,
+                            plot_folder)
+
         # Plotting the solutions
         if plotting_sols_anim is True:
             if count == 0:
@@ -485,7 +522,20 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
                 figobj = plt_anim.animate_next_(evolver_opt_tree.population.objectives, figobj, filename_scatterplot, count)
         count=count+1
 
+
+
         evolver_opt_tree._refresh_population()
+        if plt_surface_per_iter:
+            filename = plot_folder + 'htgp_surface_'
+            plt_surface_all(surrogate_problem,
+            filename+str(count),
+            init_folder,
+            problem_testbench, 
+            problem_name, 
+            nobjs, 
+            nvars, 
+            sampling, 
+            nsamples)
 
     print("Size solutions:",np.shape(population_opt_tree.objectives))
 

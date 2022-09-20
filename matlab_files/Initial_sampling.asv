@@ -5,17 +5,15 @@ addpath(genpath('Public'));
 %Problem = 'DTLZ';
 %Problems = {'DDMOPP','DTLZ'};
 Problems = {'DDMOPP'};
-Runs=35;
+Runs=1;
 %Strategies={'MVNORM', 'LHS'};
 Strategies={'MVMIXNORM'};
 %Design='Random';
 %Design='MVNORM';
 sample_sizes = [2000, 10000, 50000];
-%sample_sizes = [2000];
 
-%num_vars = [2, 5, 7, 10, 20];
-num_vars = [2, 5, 7, 10];
-%num_vars = [2];
+%num_vars = [2, 5, 7, 10, 20]
+num_vars = [2, 5, 7, 10, 20]
 %no_vars = 20
 %[~,Boundary,Coding] = P_objective('init',Problem,2,100);
 
@@ -79,10 +77,8 @@ for ss = 1:length(sample_sizes)
                    sigma = 0.0*ones(no_vars,no_vars)+0.1*eye(no_vars); 
                    Population_2 = mvrandn(lb*ones(1,no_vars),ub*ones(1,no_vars),sigma,sample_size/2)+mean_pnt_2;            
                    
-                   Population = [Population_1 Population_2];                   
+                   Population = [Population_1;Population_2];                   
                    Population = Population';
-                   size(Population)
-                   %scatter(Population(:,1),Population(:,2))
                 end
 
                 if Problem == "DDMOPP"

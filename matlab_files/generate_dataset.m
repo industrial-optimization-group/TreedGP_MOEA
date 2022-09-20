@@ -1,10 +1,12 @@
 clear all;
 
-Mobj=[9]%,4,5,6,8,10]; %,5];
-%Mobj = [3,5,7]
-num_vars = [2, 5, 7, 10, 20] %,8,10];
+%Mobj=[9]%,4,5,6,8,10]; %,5];
+Mobj = [3,5,7]
+%num_vars = [2, 5, 7, 10, 20] %,8,10];
+num_vars = [2, 5, 7, 10]
 %managements = {'1','7','8'}; %,'Offline_m5_ibea','Offline_ei2_ibea'}; %'Offline_m3','Offline_m5','Offline_m6','Offline_m3_ei','Offline_m3_ei2'}; %,'Offline_m3','Offline_m4'}; %'Offline_m2','Offline_m1','Offline_m3'}; %,
-Strategies = {'MVNORM', 'LHS'};
+%Strategies = {'MVNORM', 'LHS'};
+Strategies={'MVMIXNORM'};
 Problems = {'P1','P2','P3','P4'};
 Runs=35;
 %Design='LHS';

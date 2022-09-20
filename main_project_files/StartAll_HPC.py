@@ -32,28 +32,31 @@ interactive = False
 
 main_directory = 'Test_DR_CSC_Finalx'
 
-nruns = 31
+nruns = 1
 parallel_jobs = 1
 
-dims = [2, 5, 7, 10]
-sampling = ['LHS', 'MVNORM']
-sample_sizes = [2000,10000, 50000]
+dims = [2] #, 5, 7, 10]
+sampling = ['LHS'] #, 'MVNORM']
+sample_sizes = [2000]#,10000, 50000]
 
-objectives = [3,5,7]
+#objectives = [3,5,7]
+objectives = [2]
 
 #problem_testbench = 'DTLZ'
 problem_testbench = 'DDMOPP'
 
-#problems = ['DTLZ2','DTLZ4','DTLZ5','DTLZ6','DTLZ7']
-problems = ['P1','P2','P3','P4']
+#problems = ['DTLZ2'] #,'DTLZ4','DTLZ5','DTLZ6','DTLZ7']
+problems = ['P1'] #,'P2','P3','P4']
 
-approaches = ["generic_fullgp","generic_sparsegp","htgp"]
+#approaches = ["generic_fullgp","generic_sparsegp","htgp"]
 #approaches = ["generic_sparsegp","htgp"]
+approaches = ["htgp"]
 emo_algorithm = ['RVEA']
 
 log_time = str(datetime.datetime.now())
 
 def parallel_execute(run, approach, algo, prob, n_vars, obj, samp, sample_size):
+    run=run+1
     path_to_file = data_folder + '/test_runs/'+ main_directory \
                 + '/Offline_Mode_' + approach + '_' + algo + \
                 '/' + samp + '/' + str(sample_size) + '/' + problem_testbench  + '/' + prob + '_' + str(obj) + '_' + str(n_vars)
