@@ -10,6 +10,7 @@ from non_domx import ndx
 rc('font',**{'family':'serif','serif':['Helvetica']})
 rc('text', usetex=True)
 plt.rcParams.update({'font.size': 15})
+
 font_size=17
 color_code = 'blue'
 

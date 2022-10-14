@@ -50,7 +50,8 @@ plotting_sols_anim = False
 plotting_sols = True
 plt_surface_per_iter = False
 plot_decision_space_solutions = True
-do_non_dom_sort = True
+#do_non_dom_sort = True
+do_non_dom_sort = False
 
 def build_surrogates(problem_testbench, problem_name, nobjs, nvars, nsamples, sampling, is_data, x_data, y_data, surrogate_type, Z=None, z_samples=None):
     x_names = [f'x{i}' for i in range(1,nvars+1)]
@@ -472,11 +473,14 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
             ax.scatter(x=x_p, y=y_p, marker='*')
             ax.set_xlim(range_axis)
             ax.set_ylim(range_axis)
-            plt.title(r'$I= {cnt}$'.format(cnt=str(count)))
+            plt.title(r'$I= {cnt}$'.format(cnt=str(evolver_opt_tree._iteration_counter)))
             plt.xlabel(r'$f_1(\mathbf{x})$')
             plt.ylabel(r'$f_2(\mathbf{x})$')
             fig.tight_layout()
-            plt.savefig(plot_folder+"scatter_solns_new"+str(count)+"_"+str(run)+".pdf")
+            plt.savefig(plot_folder+
+                        "scatter_solns_new"+
+                        str(evolver_opt_tree._iteration_counter)+
+                        "_"+str(run)+".pdf")
             ax.cla()
             fig.clf()
             plt.close()
@@ -538,7 +542,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
             nsamples)
 
     print("Size solutions:",np.shape(population_opt_tree.objectives))
-
+    """
     if plotting_sols is True:
         y1,s1=surrogate_problem.objectives[0]._model.predict_test(X_solutions)
         y2,s2=surrogate_problem.objectives[1]._model.predict_test(X_solutions)
@@ -555,7 +559,7 @@ def run_optimizer_htgp(problem_testbench, problem_name, nobjs, nvars, sampling, 
         ax.cla()
         fig.clf()
         plt.close()
-
+    """
 
     end = time.time()
     #print("Solns:",population_opt_tree.objectives)

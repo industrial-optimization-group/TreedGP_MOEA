@@ -18,8 +18,8 @@ from evaluate_population import evaluate_run
 data_folder = '/home/amrzr/Work/Codes/data'
 init_folder = data_folder + '/initial_samples'
 
-evaluate_data = False
-#evaluate_data = True
+#evaluate_data = False
+evaluate_data = True
 evaluate_data_archive = False
 #evaluate_data_archive = True
 is_plot = False
@@ -30,33 +30,43 @@ convert_to_mat = False
 #convert_to_mat = True
 interactive = False
 
-main_directory = 'Test_DR_CSC_Finalx'
+#main_directory = 'Test_DR_CSC_Finalx'
+main_directory = 'Test_DR_CSC_MVMIXNORM'
 
 nruns = 1
 parallel_jobs = 1
 
-dims = [2] #, 5, 7, 10]
-sampling = ['LHS'] #, 'MVNORM']
-sample_sizes = [2000]#,10000, 50000]
+#dims = [2] #, 5, 7, 10]
+dims = [2, 5, 7, 10]
 
-#objectives = [3,5,7]
-objectives = [2]
+#sampling = ['LHS'] #, 'MVNORM']
+sampling = ['MVMIXNORM']
+
+
+sample_sizes = [2000]#,10000, 50000]
+#sample_sizes = [2000,10000, 50000]
+
+objectives = [3,5,7]
+#objectives = [2]
 
 #problem_testbench = 'DTLZ'
 problem_testbench = 'DDMOPP'
 
 #problems = ['DTLZ2'] #,'DTLZ4','DTLZ5','DTLZ6','DTLZ7']
-problems = ['P1'] #,'P2','P3','P4']
+#problems = ['P1'] #,'P2','P3','P4']
+problems = ['P1','P2','P3','P4']
 
 #approaches = ["generic_fullgp","generic_sparsegp","htgp"]
 #approaches = ["generic_sparsegp","htgp"]
-approaches = ["htgp"]
+approaches = ["generic_fullgp"]
+#approaches = ["generic_sparsegp"]
+#approaches = ["htgp"]
 emo_algorithm = ['RVEA']
 
 log_time = str(datetime.datetime.now())
 
 def parallel_execute(run, approach, algo, prob, n_vars, obj, samp, sample_size):
-    run=run+1
+    run=run
     path_to_file = data_folder + '/test_runs/'+ main_directory \
                 + '/Offline_Mode_' + approach + '_' + algo + \
                 '/' + samp + '/' + str(sample_size) + '/' + problem_testbench  + '/' + prob + '_' + str(obj) + '_' + str(n_vars)
